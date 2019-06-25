@@ -2,9 +2,10 @@
 
 Plugin to execute batch commands in WorldGuard
 
-##Commands:
-###Membership:
-####Remove Player
+## Commands
+### Membership
+#### Remove Player
+
 - Remove Player from all Regions\
 /wgb mrem all    [playerToRemove]
 - Remove Player as Member from all Regions\
@@ -33,7 +34,7 @@ Plugin to execute batch commands in WorldGuard
 - Remove Player as Owner on all Regions owned by player\
 /wgb mrem owber  [playerToRemove] owner [owner]
 
-####Add Player
+#### Add Player
 - Add Player as Member on all Regions\
 /wgb madd member [playerToRemove]
 - Add Player as Owner from all Regions\
@@ -55,7 +56,7 @@ Plugin to execute batch commands in WorldGuard
 /wgb madd owner  [playerToRemove] owner [owner]
 
 
-###Priority
+### Priority
 - Set priority on all Regions\
 /wgb prio [priority]
 - Set priority on all Regions with parent\
@@ -66,7 +67,7 @@ Plugin to execute batch commands in WorldGuard
 /wgb prio [priority] count [name] regex [name]
 
 
-###Parent/Inheritance
+### Parent/Inheritance
 - Set parent on all Regions\
 /wgb pset [parent]
 - Set parent on all Regions with pattern\
