@@ -131,7 +131,8 @@ public class RegionLoader {
      * @param boundMax end number of counter - exclusive
      * @return Returns list of regions with matching name pattern.
      */
-    public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world, String name, int boundMin, int boundMax) {
+    public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world,
+                                                           String name, int boundMin, int boundMax) {
         List<ProtectedRegion> result = new ArrayList<>();
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));

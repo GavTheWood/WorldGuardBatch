@@ -21,18 +21,18 @@ Plugin to execute batch commands in WorldGuard
 /wgb mrem owner  [playerToRemove] count [name] [count1] [count2]
 
 - Remove Player from all Regions with name pattern\
-/wgb mrem all    [playerToRemove] regex [name] [count1] [count2]
+/wgb mrem all    [playerToRemove] regex [name]
 - Remove Player as Member from Regions with name pattern\
-/wgb mrem member [playerToRemove] regex [name] [count1] [count2]
+/wgb mrem member [playerToRemove] regex [name]
 - Remove Player as Owner from Regions with name pattern\
-/wgb mrem owner  [playerToRemove] regex [name] [count1] [count2]
+/wgb mrem owner  [playerToRemove] regex [name]
 
 - Remove Player on all Regions owned by player\
 /wgb mrem all    [playerToRemove] owner [owner]
 - Remove Player as Member on all Regions owned by player\
 /wgb mrem member [playerToRemove] owner [owner]
 - Remove Player as Owner on all Regions owned by player\
-/wgb mrem owber  [playerToRemove] owner [owner]
+/wgb mrem owner  [playerToRemove] owner [owner]
 
 #### Add Player
 - Add Player as Member on all Regions\
@@ -55,6 +55,13 @@ Plugin to execute batch commands in WorldGuard
 - Add Player as Owner on all Regions owned by player\
 /wgb madd owner  [playerToRemove] owner [owner]
 
+#### Transfer Membership
+- Transfers membership from all region of a player to a player\
+/wgb mtrans all [oldOwner] [newOwner]
+- Transfers only membership from all region of a player to a player\
+/wbg mtrans member [oldOwner] [newOwner]
+- Transfers only ownership from all region of a player to a player\
+/wbg mtrans owner [oldOwner] [newOwner]
 
 ### Priority
 - Set priority on all Regions\
@@ -64,7 +71,7 @@ Plugin to execute batch commands in WorldGuard
 - Set priority on all Regions with pattern\
 /wgb prio [priority] count [name] [count1] [count2]
 - Set priority on all regions with pattern\
-/wgb prio [priority] count [name] regex [name]
+/wgb prio [priority] regex [name]
 
 
 ### Parent/Inheritance
@@ -76,20 +83,20 @@ Plugin to execute batch commands in WorldGuard
 /wgb pset [parent] count [name]
 
 - Set parent to region on all Regions with pattern\
-/wgb pset [child] [parent] count [name]
+/wgb pset [child] [parent] count [name] [count1] [count2]
 - Set parent to region on all Regions with pattern\
 /wgb pset [child] [parent] regex [name]
 
 - Remove all childs from parent
 /wgb crem [parent]
 - Remove all child from parent with pattern\
-/wgb crem [parent] count [name]
+/wgb crem [parent] count [name] [count1] [count2]
 - Remove all child from parent with pattern\
 /wgb crem [parent] regex [name]
 
 
 - Remove parent from all regions with pattern\
-/wgb prem count [name]
+/wgb prem count [name] [count1] [count2]
 - Remove parent from all regions with pattern\
 /wgb prem regex [name]
 
