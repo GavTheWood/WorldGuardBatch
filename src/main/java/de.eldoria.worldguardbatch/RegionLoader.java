@@ -134,9 +134,7 @@ public class RegionLoader {
     public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world, String name, int boundMin, int boundMax) {
         List<ProtectedRegion> result = new ArrayList<>();
 
-        var wWorld = BukkitAdapter.adapt(world);
-
-        var worldContainer = regionContainer.get(wWorld);
+        var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
         if (worldContainer == null) {
             //TODO: World not found? But how?
             return result;
@@ -151,6 +149,25 @@ public class RegionLoader {
 
             if (regions.containsKey(regName)) {
                 result.add(regions.get(regName));
+            }
+        }
+        return result;
+    }
+
+    public List<ProtectedRegion> getAllChildsOfRegionInWorld(org.bukkit.World world, String name) {
+        List<ProtectedRegion> result = new ArrayList<>();
+
+        var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
+        if (worldContainer == null) {
+            //TODO: World not found? But how?
+            return result;
+        }
+
+        var regions = worldContainer.getRegions();
+
+        for (ProtectedRegion region : regions.values()) {
+            if (region.getParent().getId().equalsIgnoreCase(name)) {
+                result.add(region);
             }
         }
         return result;
@@ -176,4 +193,6 @@ public class RegionLoader {
 
         return WorldGuardPlugin.inst().wrapPlayer(player);
     }
+
+
 }
