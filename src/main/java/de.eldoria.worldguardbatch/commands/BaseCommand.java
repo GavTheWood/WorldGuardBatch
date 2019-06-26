@@ -1,6 +1,7 @@
 package de.eldoria.worldguardbatch.commands;
 
 import de.eldoria.worldguardbatch.RegionLoader;
+import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
 import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
 import de.eldoria.worldguardbatch.commands.subcommands.ParentManager;
 import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
@@ -14,6 +15,7 @@ public class BaseCommand implements CommandExecutor {
     private MembershipManager membershipManager;
     private PriorityManager priorityManager;
     private ParentManager parentManager;
+    private FlagManager flagManager;
 
     /**
      * Creates a new Base Command Object.
@@ -24,6 +26,7 @@ public class BaseCommand implements CommandExecutor {
         this.membershipManager = new MembershipManager(regionLoader);
         this.priorityManager = new PriorityManager(regionLoader);
         this.parentManager = new ParentManager(regionLoader);
+        this.flagManager = new FlagManager(regionLoader);
     }
 
     @Override
@@ -61,6 +64,10 @@ public class BaseCommand implements CommandExecutor {
                 case CREM:
                 case PREM:
                     parentManager.directCommand(p,args);
+                    break;
+                case FSET:
+                case FREM:
+                    flagManager.directCommand(p,args);
                     break;
                 case HELP:
                     break;
