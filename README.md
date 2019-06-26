@@ -36,24 +36,24 @@ Plugin to execute batch commands in WorldGuard
 
 #### Add Player
 - Add Player as Member on all Regions\
-/wgb madd member [playerToRemove]
+/wgb madd member [playerToAdd]
 - Add Player as Owner from all Regions\
-/wgb madd owner  [playerToRemove]
+/wgb madd owner  [playerToAdd]
 
 - Add Player as Member on Regions with name pattern\
-/wgb madd member [playerToRemove] count [name] [count1] [count2]
+/wgb madd member [playerToAdd] count [name] [count1] [count2]
 - Add Player as Owner on Regions with name pattern\
-/wgb madd owner  [playerToRemove] count [name] [count1] [count2]
+/wgb madd owner  [playerToAdd] count [name] [count1] [count2]
 
 - Add Player as Member on Regions with name pattern\
-/wgb madd member [playerToRemove] regex [name]
+/wgb madd member [playerToAdd] regex [name]
 - Add Player as Owner on Regions with name pattern\
-/wgb madd owner  [playerToRemove] regex [name]
+/wgb madd owner  [playerToAdd] regex [name]
 
 - Add Player as Member on all Regions owned by player\
-/wgb madd member [playerToRemove] owner [owner]
+/wgb madd member [playerToAdd] owner [owner]
 - Add Player as Owner on all Regions owned by player\
-/wgb madd owner  [playerToRemove] owner [owner]
+/wgb madd owner  [playerToAdd] owner [owner]
 
 #### Transfer Membership
 - Transfers membership from all region of a player to a player\
