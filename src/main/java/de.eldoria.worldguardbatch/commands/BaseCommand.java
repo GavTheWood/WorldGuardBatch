@@ -1,10 +1,7 @@
 package de.eldoria.worldguardbatch.commands;
 
 import de.eldoria.worldguardbatch.RegionLoader;
-import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
-import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
-import de.eldoria.worldguardbatch.commands.subcommands.ParentManager;
-import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
+import de.eldoria.worldguardbatch.commands.subcommands.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +13,7 @@ public class BaseCommand implements CommandExecutor {
     private PriorityManager priorityManager;
     private ParentManager parentManager;
     private FlagManager flagManager;
+    private CheckSubCommand checkSubCommand;
 
     /**
      * Creates a new Base Command Object.
@@ -27,6 +25,7 @@ public class BaseCommand implements CommandExecutor {
         this.priorityManager = new PriorityManager(regionLoader);
         this.parentManager = new ParentManager(regionLoader);
         this.flagManager = new FlagManager(regionLoader);
+        this.checkSubCommand = new CheckSubCommand(regionLoader);
     }
 
     @Override
@@ -68,6 +67,10 @@ public class BaseCommand implements CommandExecutor {
                 case FSET:
                 case FREM:
                     flagManager.directCommand(p,args);
+                    break;
+                case CHECK:
+                case LIST:
+                    checkSubCommand.directCommand(p, args);
                     break;
                 case HELP:
                     break;

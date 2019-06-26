@@ -56,6 +56,16 @@ public enum PrimaryActionArgument {
     FREM,
 
     /**
+     * Call check command.
+     */
+    CHECK,
+
+    /**
+     * Call list command.
+     */
+    LIST,
+
+    /**
      * Call help command.
      */
     HELP;
