@@ -260,4 +260,20 @@ public class RegionLoader {
     }
 
 
+    /**
+     * Get one region in a world.
+     * @param world world for lookup
+     * @param name name of the region
+     * @return Region or null if the region does not exists
+     */
+    public ProtectedRegion getRegionInWorld(org.bukkit.World world, String name) {
+        var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
+
+        if (worldContainer == null) {
+            //TODO: World not found? But how?
+            return null;
+        }
+
+        return worldContainer.getRegion(name);
+    }
 }
