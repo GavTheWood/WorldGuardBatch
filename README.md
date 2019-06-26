@@ -57,9 +57,9 @@ Plugin to execute batch commands in WorldGuard
 
 #### Transfer Membership
 - Transfers membership from all region of a player to a player\
-/wgb mtrans all [oldOwner] [newOwner]
+/wgb mtrans all [oldPlayer] [newPlayer]
 - Transfers only membership from all region of a player to a player\
-/wbg mtrans member [oldOwner] [newOwner]
+/wbg mtrans member [oldMember] [newMember]
 - Transfers only ownership from all region of a player to a player\
 /wbg mtrans owner [oldOwner] [newOwner]
 
