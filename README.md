@@ -103,11 +103,11 @@ Affects all region which matches the count pattern.
 
 
 #### Change parent
-Changes the current parent to a new parent  
-`/wgb pset [oldParent] [newParent]`
+Changes the parent of all children to a new parent  
+`/wgb pch [oldParent] [newParent]`
 
 #### Remove children from parent
-Removes children from a parent region.
+Removes children from a parent region. Region does not have any children after this
 
 Affects all regions, which are a child of this region.  
 `/wgb crem [parent]`
