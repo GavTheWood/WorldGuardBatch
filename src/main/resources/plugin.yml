@@ -1,0 +1,26 @@
+name: EldoBounty
+version: 1.0
+depend: [WorldGuard, WorldEdit]
+description: Provides batch commands for WorldGuard operations.
+author: Hadde
+website: https://eldoria.de
+main: de.eldoria.WorldGuardBatch
+api-version: 1.13
+commands:
+  wgb:
+    description: Informations about the plugin.
+    aliases:
+      - batch
+      - regionbatch
+    permission: wgb.use
+    permission-message: I'm terribly sorry, Captain, of course, but you have no authority to carry out that order.
+    usage: /wgb
+permissions:
+  eldobounty.use:
+    description: Enables to execute the player commands of the plugin
+    default: false
+  eldobounty.admin:
+    description: Enables to execute the admin commands of the plugin
+    default: op
+    children:
+      eldobounty.use: true
