@@ -3,6 +3,7 @@ package de.eldoria.worldguardbatch.commands.subcommands;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -13,9 +14,10 @@ public class PriorityManager implements Subcommand {
 
     /**
      * Creates a ne Priority Manager instance.
-     * @param regionLoader
+     *
+     * @param regionLoader Region Loader instance
      */
-    public PriorityManager(RegionLoader regionLoader) {
+    public PriorityManager(@NonNull RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
     }
 
@@ -30,7 +32,8 @@ public class PriorityManager implements Subcommand {
         if (args.length > 2) {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[3]);
 
-            if (regionIdentificationArgument == RegionIdentificationArgument.NONE || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
+            if (regionIdentificationArgument == RegionIdentificationArgument.NONE
+                    || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
                 //TODO: Invalid identification arg.
                 return false;
             }
@@ -42,11 +45,6 @@ public class PriorityManager implements Subcommand {
             prio = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
             //TODO: Not a number.
-            return true;
-        }
-
-        if (prio < 0 || prio > 10) {
-            //TODO: Prio must be between 0 and 10.
             return true;
         }
 
@@ -72,6 +70,8 @@ public class PriorityManager implements Subcommand {
                     changePriorityByParent(sender, args, prio);
                 }
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + regionIdentificationArgument);
         }
         return true;
     }

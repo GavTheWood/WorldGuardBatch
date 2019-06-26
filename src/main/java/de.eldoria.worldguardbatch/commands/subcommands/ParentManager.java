@@ -2,12 +2,11 @@ package de.eldoria.worldguardbatch.commands.subcommands;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
-import de.eldoria.worldguardbatch.commands.MembershipScopeArgument;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-import javax.swing.plaf.synth.Region;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +14,12 @@ import java.util.List;
 public class ParentManager implements Subcommand {
     private RegionLoader regionLoader;
 
-    public ParentManager(RegionLoader regionLoader) {
+    /**
+     * Creates new Parent Manager instance.
+     *
+     * @param regionLoader Region Loader instance
+     */
+    public ParentManager(@NonNull RegionLoader regionLoader) {
 
         this.regionLoader = regionLoader;
     }
@@ -191,9 +195,11 @@ public class ParentManager implements Subcommand {
                                                     String[] args, int nameIndex) {
         List<ProtectedRegion> regions = Collections.emptyList();
         if (args.length == nameIndex + 2) {
-            regions = regionLoader.getRegionsWithNameCountUp(world, args[nameIndex], args[nameIndex + 1], null);
+            regions = regionLoader
+                    .getRegionsWithNameCountUp(world, args[nameIndex], args[nameIndex + 1], null);
         } else if (args.length == nameIndex + 3) {
-            regions = regionLoader.getRegionsWithNameCountUp(world, args[nameIndex], args[nameIndex + 1], args[nameIndex + 2]);
+            regions = regionLoader
+                    .getRegionsWithNameCountUp(world, args[nameIndex], args[nameIndex + 1], args[nameIndex + 2]);
         }
         return regions;
     }

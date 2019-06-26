@@ -6,9 +6,9 @@ import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.MembershipScopeArgument;
+import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,7 @@ public class MembershipManager implements Subcommand {
      * @param regionLoader RegionLoader object.
      */
 
-    public MembershipManager(@Nonnull RegionLoader regionLoader) {
+    public MembershipManager(@NonNull RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
     }
 
