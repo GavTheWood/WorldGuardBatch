@@ -336,34 +336,13 @@ public class MembershipManager implements Subcommand {
     }
 
     private List<ProtectedRegion> getRegionByCountUp(Player sender, String[] args) {
-        var playerName = args[3];
+        var name = args[4];
 
-        int min = 0;
-        int max = 0;
-
-        try {
-            max = Integer.parseInt(args[5]);
-
-        } catch (NumberFormatException e) {
-            //TODO: Not a valid number
-            return Collections.emptyList();
+        if (args.length == 6) {
+            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, args[5], null);
+        } else if (args.length == 7) {
+            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, args[5], args[6]);
         }
-        if (args.length == 7) {
-            min = max;
-            try {
-                max = Integer.parseInt(args[6]);
-
-            } catch (NumberFormatException e) {
-                //TODO: not a valid number
-                return Collections.emptyList();
-            }
-        }
-
-        if (min < 0 || max < 0 || max < min) {
-            //TODO: No valid numbers
-            return Collections.emptyList();
-        }
-
-        return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), playerName, min, max);
+        return Collections.emptyList();
     }
 }
