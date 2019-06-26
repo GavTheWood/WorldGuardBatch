@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -113,8 +114,10 @@ public class RegionLoader {
 
         List<ProtectedRegion> result = new ArrayList<>();
 
+        var pattern = Pattern.compile(regex);
+
         for (ProtectedRegion region : regions.values()) {
-            if (region.getId().matches(regex)) {
+            if (pattern.matcher(region.getId()).matches()) {
                 result.add(region);
             }
         }
