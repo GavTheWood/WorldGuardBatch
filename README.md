@@ -130,11 +130,13 @@ Affects all regions matching the regex pattern
 `/wgb prem regex [regex pattern]`
 
 ### Flags
-Manage flags.
+Manage flags.  
+Flagname and value is the same like in world guard.
 #### Set Flags
-Affects
+Affects all regions with matching type pattern.
 `/wgb fset regex [regex pattern] [flagname] [flagvalue]`
-`/wgb frem regex [regex pattern] [flagname]`
 
 
 #### Remove Flags
+Affecs all regions with matching name pattern.
+`/wgb frem regex [regex pattern] [flagname]`
