@@ -6,6 +6,7 @@ import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.MembershipScopeArgument;
+import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
@@ -159,10 +160,10 @@ public class MembershipManager implements Subcommand {
     }
 
 
-    private boolean removePlayer(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void removePlayer(Player sender, String[] args, MembershipScopeArgument scope) {
         var playerName = args[2];
 
-        List<ProtectedRegion> regions = new ArrayList<>();
+        List<ProtectedRegion> regions;
 
         //noinspection Duplicates
         switch (scope) {
@@ -181,75 +182,60 @@ public class MembershipManager implements Subcommand {
 
 
         removeByScope(scope, regions, playerName);
-
-        return true;
     }
 
-    private boolean removePlayerByName(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void removePlayerByName(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = getRegionByCountUp(sender, args);
 
         if (regions == null) {
             //TODO: No valid number.
-            return false;
+            return;
         }
 
         removeByScope(scope, regions, args[2]);
 
-        return true;
     }
 
-    private boolean removePlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void removePlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[4]);
 
         removeByScope(scope, regions, args[2]);
-
-        return true;
     }
 
-    private boolean removePlayerByOwner(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void removePlayerByOwner(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[4]);
 
         removeByScope(scope, regions, args[2]);
-
-        return true;
     }
 
 
-    private boolean addPlayer(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void addPlayer(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getRegionsInWorld(sender.getWorld());
 
         addByScope(scope, regions, args[2]);
-
-        return true;
     }
 
-    private boolean addPlayerByName(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void addPlayerByName(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = getRegionByCountUp(sender, args);
 
         if (regions == null) {
             //TODO: No valid number.
-            return false;
+            return;
         }
 
         addByScope(scope, regions, args[2]);
-
-        return true;
     }
 
-    private boolean addPlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void addPlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[4]);
 
         addByScope(scope, regions, args[2]);
-
-        return true;
     }
 
-    private boolean addPlayerByOwner(Player sender, String[] args, MembershipScopeArgument scope) {
+    private void addPlayerByOwner(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[4]);
 
         addByScope(scope, regions, args[2]);
-
-        return true;
     }
 
     private void removePlayerFromRegion(LocalPlayer player, ProtectedRegion region) {
@@ -339,9 +325,11 @@ public class MembershipManager implements Subcommand {
         var name = args[4];
 
         if (args.length == 6) {
-            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, args[5], null);
+            var range = IntRange.parseString(args[5], null);
+            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, range);
         } else if (args.length == 7) {
-            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, args[5], args[6]);
+            var range = IntRange.parseString(args[5], args[6]);
+            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, range);
         }
         return Collections.emptyList();
     }

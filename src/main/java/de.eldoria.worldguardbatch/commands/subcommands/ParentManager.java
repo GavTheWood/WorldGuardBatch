@@ -4,6 +4,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
@@ -195,11 +196,13 @@ public class ParentManager implements Subcommand {
                                                     String[] args, int nameIndex) {
         List<ProtectedRegion> regions = Collections.emptyList();
         if (args.length == nameIndex + 2) {
+            var range = IntRange.parseString(args[nameIndex + 1], null);
             regions = regionLoader
-                    .getRegionsWithNameCountUp(world, args[nameIndex], args[nameIndex + 1], null);
+                    .getRegionsWithNameCountUp(world, args[nameIndex], range);
         } else if (args.length == nameIndex + 3) {
+            var range = IntRange.parseString(args[nameIndex + 1], args[nameIndex + 2]);
             regions = regionLoader
-                    .getRegionsWithNameCountUp(world, args[nameIndex], args[nameIndex + 1], args[nameIndex + 2]);
+                    .getRegionsWithNameCountUp(world, args[nameIndex], range);
         }
         return regions;
     }

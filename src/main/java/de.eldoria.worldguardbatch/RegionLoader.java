@@ -7,6 +7,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import de.eldoria.worldguardbatch.util.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -132,40 +133,18 @@ public class RegionLoader {
      *
      * @param world    World in whoch the regions should be found.
      * @param name     name of the regions with a start for counter
-     * @param boundMin start number of counter - inclusive
-     * @param boundMax end number of counter - exclusive
+     * @param range    Range of the numbers
      * @return Returns list of regions with matching name pattern.
      */
     public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world,
-                                                           String name, String boundMin, String boundMax) {
+                                                           String name, IntRange range) {
         List<ProtectedRegion> result = new ArrayList<>();
 
-        int min = 0;
-        int max;
 
-        try {
-            max = Integer.parseInt(boundMin);
-
-        } catch (NumberFormatException e) {
-            //TODO: Not a valid number
-            return Collections.emptyList();
-        }
-        if (boundMax != null) {
-            min = max;
-            try {
-                max = Integer.parseInt(boundMax);
-
-            } catch (NumberFormatException e) {
-                //TODO: not a valid number
-                return Collections.emptyList();
-            }
-        }
-
-        if (min < 0 || max < 0 || max < min) {
+        if (range.getMin() < 0 || range.getMax() < 0 || range.getMin() > range.getMax()) {
             //TODO: No valid numbers
             return Collections.emptyList();
         }
-
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
         if (worldContainer == null) {
@@ -175,7 +154,7 @@ public class RegionLoader {
 
         var regions = worldContainer.getRegions();
 
-        for (int i = min; i < max; i++) {
+        for (int i : range) {
             var num = String.valueOf(i);
 
             var regName = name.replace("*", num);
@@ -184,6 +163,7 @@ public class RegionLoader {
                 result.add(regions.get(regName));
             }
         }
+
         return result;
     }
 
@@ -266,8 +246,9 @@ public class RegionLoader {
 
     /**
      * Get one region in a world.
+     *
      * @param world world for lookup
-     * @param name name of the region
+     * @param name  name of the region
      * @return Region or null if the region does not exists
      */
     public ProtectedRegion getRegionInWorld(org.bukkit.World world, String name) {

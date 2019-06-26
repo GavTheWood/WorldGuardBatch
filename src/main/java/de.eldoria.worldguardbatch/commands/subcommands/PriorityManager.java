@@ -3,6 +3,7 @@ package de.eldoria.worldguardbatch.commands.subcommands;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
@@ -85,9 +86,11 @@ public class PriorityManager implements Subcommand {
     private void changePriorityByCount(Player sender, String[] args, int prio) {
         List<ProtectedRegion> regions = Collections.emptyList();
         if (args.length == 5) {
-            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], args[4], null);
+            var range = IntRange.parseString(args[4], null);
+            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], range);
         } else if (args.length == 6) {
-            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], args[4], args[5]);
+            var range = IntRange.parseString(args[4], args[5]);
+            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], range);
         }
 
         regions.forEach(region -> region.setPriority(prio));
