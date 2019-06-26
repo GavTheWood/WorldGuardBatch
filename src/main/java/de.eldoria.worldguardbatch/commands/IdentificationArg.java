@@ -27,7 +27,7 @@ public enum IdentificationArg {
      * @param s String which should be parsed.
      * @return The enum as string or NONE if no enum could be parsed.
      */
-    public static IdentificationArg getPrimary(String s) {
+    public static IdentificationArg getIdentification(String s) {
         for (IdentificationArg v : IdentificationArg.values()) {
             if (v.toString().equalsIgnoreCase(s)) {
                 return v;
