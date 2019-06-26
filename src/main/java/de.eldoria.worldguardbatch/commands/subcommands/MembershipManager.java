@@ -75,6 +75,8 @@ public class MembershipManager implements Subcommand {
                         return false;
                     }
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + identificationArg);
             }
         } else if (primary == PrimaryArg.MADD) {
             switch (identificationArg) {
@@ -125,6 +127,8 @@ public class MembershipManager implements Subcommand {
                         return false;
                     }
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + identificationArg);
             }
         } else if (primary == PrimaryArg.MTRANS) {
             if (args.length == 4) {
@@ -170,6 +174,8 @@ public class MembershipManager implements Subcommand {
             case MEMBER:
                 regions = regionLoader.getMemberRegionsFromPlayerInWorld(sender.getWorld(), playerName);
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + scope);
         }
 
 
@@ -299,6 +305,8 @@ public class MembershipManager implements Subcommand {
                 case MEMBER:
                     removeMemberFromRegion(player, region);
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + scope);
             }
 
         }
@@ -320,6 +328,8 @@ public class MembershipManager implements Subcommand {
                 case MEMBER:
                     addMemberToRegion(player, region);
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + scope);
             }
         }
     }

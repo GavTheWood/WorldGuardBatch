@@ -155,6 +155,12 @@ public class RegionLoader {
         return result;
     }
 
+    /**
+     * Get all regions which are a child of a region.
+     * @param world world for lookup
+     * @param name name of the parent
+     * @return list of children of the parent.
+     */
     public List<ProtectedRegion> getAllChildsOfRegionInWorld(org.bukkit.World world, String name) {
         List<ProtectedRegion> result = new ArrayList<>();
 
@@ -174,6 +180,11 @@ public class RegionLoader {
         return result;
     }
 
+    /**
+     * Get all regions in a world.
+     * @param world world for lookup
+     * @return List of all regions in the world.
+     */
     public List<ProtectedRegion> getRegionsInWorld(org.bukkit.World world) {
         List<ProtectedRegion> result = new ArrayList<>();
 
@@ -191,6 +202,11 @@ public class RegionLoader {
         return result;
     }
 
+    /**
+     * Get a local player object from a string.
+     * @param name name to lookup
+     * @return Local Player object. Null if the player never joined the server.
+     */
     public static LocalPlayer getLocalPlayerFromName(String name) {
         if (name == null || name.equalsIgnoreCase("")) {
             //TODO: No player name given.

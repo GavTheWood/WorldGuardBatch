@@ -12,6 +12,10 @@ public class BaseCommand implements CommandExecutor {
     private RegionLoader regionLoader;
     private MembershipManager membershipManager;
 
+    /**
+     * Creates a new Base Command Object.
+     * @param regionLoader RegionLoader Object
+     */
     public BaseCommand(RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
         membershipManager = new MembershipManager(regionLoader);
@@ -39,10 +43,10 @@ public class BaseCommand implements CommandExecutor {
                 case NONE:
                     //TODO: No valid argument found.
                     break;
+                case MADD:
+                case MTRANS:
                 case MREM:
                     membershipManager.directCommand(p, args);
-                    break;
-                case MADD:
                     break;
                 case PRIO:
                     break;
@@ -52,10 +56,10 @@ public class BaseCommand implements CommandExecutor {
                     break;
                 case PREM:
                     break;
-                case MTRANS:
-                    break;
                 case HELP:
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + primaryArg);
             }
         }
 
