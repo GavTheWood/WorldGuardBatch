@@ -51,7 +51,7 @@ Assigns a player as member or owner to all regions.
 
 ##### Assign membership with auto increment selection
 Assigns a player as member or owner to all regions, which matches the name pattern.  
-`/wgb madd [member/owner] [playerToAdd] count [name] [count1] [count2]`
+`/wgb madd [member/owner] [playerToAdd] count [name] [count1] <count2>`
 
 ##### Assign membership with regex selection
 Assign a player as member or owner to all regions, which matches the regex pattern.  
@@ -81,7 +81,7 @@ Affects all regions, which are a child of the region.
 `/wgb prio [priority] parent [regionid]`
 
 Affects all regions, which matches the count pattern.  
-`/wgb prio [priority] count [name] [count1] [count2]`
+`/wgb prio [priority] count [name] [count1] <count2>`
 
 Affects all regions, which matches the regex pattern.  
 `/wgb prio [priority] regex [regex pattern]`
@@ -100,7 +100,7 @@ Affects all region which matches the regex pattern.
 `/wgb pset [parent] regex [regex pattern]`
 
 Affects all region which matches the count pattern.  
-`/wgb pset [parent] count [name] [count1] [count2]`
+`/wgb pset [parent] count [name] [count1] <count2>`
 
 
 #### Change parent
@@ -114,7 +114,7 @@ Affects all regions, which are a child of this region.
 `/wgb crem [parent]`
 
 Affects all regions, which are a child of this region and matches the count pattern.  
-`/wgb crem [parent] count [name] [count1] [count2]`
+`/wgb crem [parent] count [name] [count1] <count2>`
 
 Affects all regions, which are a child of this region and matches the regex pattern.  
 `/wgb crem [parent] regex [regex pattern]`
@@ -124,7 +124,7 @@ Affects all regions, which are a child of this region and matches the regex patt
 Removes the parent from regions. Region doesn't have a parent after this operation.
 
 Affects all regions matching the count pattern  
-`/wgb prem count [name] [count1] [count2]`
+`/wgb prem count [name] [count1] <count2>`
 
 Affects all regions matching the regex pattern  
 `/wgb prem regex [regex pattern]`
