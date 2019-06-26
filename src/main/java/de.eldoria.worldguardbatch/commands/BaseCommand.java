@@ -2,6 +2,7 @@ package de.eldoria.worldguardbatch.commands;
 
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
+import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,16 +10,17 @@ import org.bukkit.entity.Player;
 
 public class BaseCommand implements CommandExecutor {
 
-    private RegionLoader regionLoader;
     private MembershipManager membershipManager;
+    private PriorityManager priorityManager;
 
     /**
      * Creates a new Base Command Object.
+     *
      * @param regionLoader RegionLoader Object
      */
     public BaseCommand(RegionLoader regionLoader) {
-        this.regionLoader = regionLoader;
         this.membershipManager = new MembershipManager(regionLoader);
+        this.priorityManager = new PriorityManager(regionLoader);
     }
 
     @Override
@@ -49,6 +51,7 @@ public class BaseCommand implements CommandExecutor {
                     membershipManager.directCommand(p, args);
                     break;
                 case PRIO:
+                    priorityManager.directCommand(p, args);
                     break;
                 case PSET:
                     break;

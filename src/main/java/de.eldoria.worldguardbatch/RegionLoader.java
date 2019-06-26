@@ -133,8 +133,35 @@ public class RegionLoader {
      * @return Returns list of regions with matching name pattern.
      */
     public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world,
-                                                           String name, int boundMin, int boundMax) {
+                                                           String name, String boundMin, String boundMax) {
         List<ProtectedRegion> result = new ArrayList<>();
+
+        int min = 0;
+        int max;
+
+        try {
+            max = Integer.parseInt(boundMin);
+
+        } catch (NumberFormatException e) {
+            //TODO: Not a valid number
+            return Collections.emptyList();
+        }
+        if (boundMax != null) {
+            min = max;
+            try {
+                max = Integer.parseInt(boundMax);
+
+            } catch (NumberFormatException e) {
+                //TODO: not a valid number
+                return Collections.emptyList();
+            }
+        }
+
+        if (min < 0 || max < 0 || max < min) {
+            //TODO: No valid numbers
+            return Collections.emptyList();
+        }
+
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
         if (worldContainer == null) {
@@ -144,7 +171,7 @@ public class RegionLoader {
 
         var regions = worldContainer.getRegions();
 
-        for (int i = boundMin; i < boundMax; i++) {
+        for (int i = min; i < max; i++) {
             var num = String.valueOf(i);
 
             var regName = name.replace("*", num);

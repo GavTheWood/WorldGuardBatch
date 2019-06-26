@@ -19,7 +19,12 @@ public enum RegionIdentificationArgument {
     /**
      * Identified by region owner.
      */
-    OWNER;
+    OWNER,
+
+    /**
+     * Identified by parent.
+     */
+    PARENT;
 
     /**
      * Returns the string as enum.
