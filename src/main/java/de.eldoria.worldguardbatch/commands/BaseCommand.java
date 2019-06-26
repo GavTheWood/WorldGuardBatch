@@ -18,7 +18,7 @@ public class BaseCommand implements CommandExecutor {
      */
     public BaseCommand(RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
-        membershipManager = new MembershipManager(regionLoader);
+        this.membershipManager = new MembershipManager(regionLoader);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class BaseCommand implements CommandExecutor {
             //TODO help
         }
         if (args.length > 1) {
-            var primaryArg = PrimaryArg.getPrimary(args[0]);
+            var primaryArg = PrimaryActionArgument.getPrimary(args[0]);
 
             switch (primaryArg) {
                 case NONE:

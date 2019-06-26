@@ -1,6 +1,6 @@
 package de.eldoria.worldguardbatch.commands;
 
-public enum ScopeArg {
+public enum MembershipScopeArgument {
     /**
      * No value defined. Used for error handling only.
      */
@@ -25,8 +25,8 @@ public enum ScopeArg {
      * @param s String which should be parsed.
      * @return The enum as string or NONE if no enum could be parsed.
      */
-    public static ScopeArg getScope(String s) {
-        for (ScopeArg v : ScopeArg.values()) {
+    public static MembershipScopeArgument getScope(String s) {
+        for (MembershipScopeArgument v : MembershipScopeArgument.values()) {
             if (v.toString().equalsIgnoreCase(s)) {
                 return v;
             }

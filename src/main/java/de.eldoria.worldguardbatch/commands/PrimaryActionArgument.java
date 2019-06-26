@@ -1,6 +1,6 @@
 package de.eldoria.worldguardbatch.commands;
 
-public enum PrimaryArg {
+public enum PrimaryActionArgument {
     /**
      * No value defined. Used for error handling only.
      */
@@ -51,8 +51,8 @@ public enum PrimaryArg {
      * @param s String which should be parsed.
      * @return The enum as string or NONE if no enum could be parsed.
      */
-    public static PrimaryArg getPrimary(String s) {
-        for (PrimaryArg v : PrimaryArg.values()) {
+    public static PrimaryActionArgument getPrimary(String s) {
+        for (PrimaryActionArgument v : PrimaryActionArgument.values()) {
             if (v.toString().equalsIgnoreCase(s)) {
                 return v;
             }
