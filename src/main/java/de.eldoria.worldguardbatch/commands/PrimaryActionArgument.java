@@ -46,6 +46,16 @@ public enum PrimaryActionArgument {
     MTRANS,
 
     /**
+     * Set flag arg.
+     */
+    FSET,
+
+    /**
+     * Remove flag arg.
+     */
+    FREM,
+
+    /**
      * Call help command.
      */
     HELP;
