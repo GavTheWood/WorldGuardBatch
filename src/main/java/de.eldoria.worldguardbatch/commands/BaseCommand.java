@@ -19,8 +19,9 @@ public class BaseCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+        Player p;
         if (commandSender instanceof Player) {
-            Player p = (Player) commandSender;
+            p = (Player) commandSender;
         } else {
             return false;
         }
@@ -39,7 +40,7 @@ public class BaseCommand implements CommandExecutor {
                     //TODO: No valid argument found.
                     break;
                 case MREM:
-
+                    membershipManager.directCommand(p, args);
                     break;
                 case MADD:
                     break;
