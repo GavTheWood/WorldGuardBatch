@@ -174,7 +174,24 @@ public class RegionLoader {
         return result;
     }
 
-    private LocalPlayer getLocalPlayerFromName(String name) {
+    public List<ProtectedRegion> getRegionsInWorld(org.bukkit.World world) {
+        List<ProtectedRegion> result = new ArrayList<>();
+
+        var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
+
+        if (worldContainer == null) {
+            //TODO: World not found? But how?
+            return result;
+        }
+
+        var regions = worldContainer.getRegions();
+
+        result.addAll(regions.values());
+
+        return result;
+    }
+
+    public static LocalPlayer getLocalPlayerFromName(String name) {
         if (name == null || name.equalsIgnoreCase("")) {
             //TODO: No player name given.
             return null;
