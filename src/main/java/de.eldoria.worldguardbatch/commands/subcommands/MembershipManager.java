@@ -17,6 +17,7 @@ public class MembershipManager implements Subcommand {
 
     /**
      * Creates a new Membership Manager instance.
+     *
      * @param regionLoader RegionLoader object.
      */
 
@@ -125,8 +126,31 @@ public class MembershipManager implements Subcommand {
                     }
                     break;
             }
+        } else if (primary == PrimaryArg.MTRANS) {
+            if (args.length == 4) {
+                transferMembership(sender, args, scope);
+            }
         }
         return true;
+    }
+
+    private void transferMembership(Player sender, String[] args, ScopeArg scope) {
+        var oldPlayer = RegionLoader.getLocalPlayerFromName(args[2]);
+        var newPlayer = RegionLoader.getLocalPlayerFromName(args[3]);
+
+        if (scope == ScopeArg.OWNER || scope == ScopeArg.ALL) {
+            var ownerRegions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[2]);
+
+            removeByScope(ScopeArg.OWNER, ownerRegions, oldPlayer);
+            addByScope(ScopeArg.OWNER, ownerRegions, newPlayer);
+        }
+
+        if (scope == ScopeArg.MEMBER || scope == ScopeArg.ALL) {
+            var memberRegions = regionLoader.getMemberRegionsFromPlayerInWorld(sender.getWorld(), args[2]);
+
+            addByScope(ScopeArg.MEMBER, memberRegions, newPlayer);
+            removeByScope(ScopeArg.MEMBER, memberRegions, oldPlayer);
+        }
     }
 
 
@@ -257,17 +281,23 @@ public class MembershipManager implements Subcommand {
     private void removeByScope(ScopeArg scope, List<ProtectedRegion> regions, String playerName) {
         var localPlayer = RegionLoader.getLocalPlayerFromName(playerName);
 
+        removeByScope(scope, regions, localPlayer);
+
+    }
+
+    private void removeByScope(ScopeArg scope, List<ProtectedRegion> regions, LocalPlayer player) {
+
         for (var region : regions) {
 
             switch (scope) {
                 case ALL:
-                    removePlayerFromRegion(localPlayer, region);
+                    removePlayerFromRegion(player, region);
                     break;
                 case OWNER:
-                    removeOwnerFromRegion(localPlayer, region);
+                    removeOwnerFromRegion(player, region);
                     break;
                 case MEMBER:
-                    removeMemberFromRegion(localPlayer, region);
+                    removeMemberFromRegion(player, region);
                     break;
             }
 
@@ -277,13 +307,18 @@ public class MembershipManager implements Subcommand {
     private void addByScope(ScopeArg scope, List<ProtectedRegion> regions, String playerName) {
         var localPlayer = RegionLoader.getLocalPlayerFromName(playerName);
 
+        addByScope(scope, regions, localPlayer);
+    }
+
+    private void addByScope(ScopeArg scope, List<ProtectedRegion> regions, LocalPlayer player) {
+
         for (var region : regions) {
             switch (scope) {
                 case OWNER:
-                    addOwnerToRegion(localPlayer, region);
+                    addOwnerToRegion(player, region);
                     break;
                 case MEMBER:
-                    addMemberToRegion(localPlayer, region);
+                    addMemberToRegion(player, region);
                     break;
             }
         }
