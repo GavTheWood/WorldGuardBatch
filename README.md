@@ -71,7 +71,7 @@ All gives the new player the same membership, which the old player had.
 
 
 ### Priority
-Changes the priotity of a region.  
+Changes the priority of a region.  
 The priority must be a number between 0 and 10.  
 The region can by selected by parent, counter name and regex.  
 
