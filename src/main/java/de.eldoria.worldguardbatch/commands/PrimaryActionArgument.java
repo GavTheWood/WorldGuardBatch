@@ -36,9 +36,24 @@ public enum PrimaryActionArgument {
     PREM,
 
     /**
+     * Change parent arg.
+     */
+    PCH,
+
+    /**
      * Transfer membership arg.
      */
     MTRANS,
+
+    /**
+     * Set flag arg.
+     */
+    FSET,
+
+    /**
+     * Remove flag arg.
+     */
+    FREM,
 
     /**
      * Call help command.

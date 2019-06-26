@@ -3,6 +3,8 @@ package de.eldoria.worldguardbatch.commands.subcommands;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import de.eldoria.worldguardbatch.util.IntRange;
+import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -13,9 +15,10 @@ public class PriorityManager implements Subcommand {
 
     /**
      * Creates a ne Priority Manager instance.
-     * @param regionLoader
+     *
+     * @param regionLoader Region Loader instance
      */
-    public PriorityManager(RegionLoader regionLoader) {
+    public PriorityManager(@NonNull RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
     }
 
@@ -30,7 +33,8 @@ public class PriorityManager implements Subcommand {
         if (args.length > 2) {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[3]);
 
-            if (regionIdentificationArgument == RegionIdentificationArgument.NONE || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
+            if (regionIdentificationArgument == RegionIdentificationArgument.NONE
+                    || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
                 //TODO: Invalid identification arg.
                 return false;
             }
@@ -42,11 +46,6 @@ public class PriorityManager implements Subcommand {
             prio = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
             //TODO: Not a number.
-            return true;
-        }
-
-        if (prio < 0 || prio > 10) {
-            //TODO: Prio must be between 0 and 10.
             return true;
         }
 
@@ -72,6 +71,8 @@ public class PriorityManager implements Subcommand {
                     changePriorityByParent(sender, args, prio);
                 }
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + regionIdentificationArgument);
         }
         return true;
     }
@@ -85,9 +86,11 @@ public class PriorityManager implements Subcommand {
     private void changePriorityByCount(Player sender, String[] args, int prio) {
         List<ProtectedRegion> regions = Collections.emptyList();
         if (args.length == 5) {
-            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], args[4], null);
+            var range = IntRange.parseString(args[4], null);
+            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], range);
         } else if (args.length == 6) {
-            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], args[4], args[5]);
+            var range = IntRange.parseString(args[4], args[5]);
+            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], range);
         }
 
         regions.forEach(region -> region.setPriority(prio));

@@ -71,8 +71,7 @@ All gives the new player the same membership, which the old player had.
 
 
 ### Priority
-Changes the priority of a region.  
-The priority must be a number between 0 and 10.  
+Changes the priority of a region.   
 The region can by selected by parent, counter name and regex.  
 
 Affects all regions.  
@@ -89,6 +88,8 @@ Affects all regions, which matches the regex pattern.
 
 
 ### Parent/Inheritance
+Manage the parent -> child inheritance of regions.
+
 #### Assign parent
 Assign a parent to a region. Old parent is removed.  
 
@@ -103,11 +104,11 @@ Affects all region which matches the count pattern.
 
 
 #### Change parent
-Changes the current parent to a new parent  
-`/wgb pset [oldParent] [newParent]`
+Changes the parent of all children to a new parent  
+`/wgb pch [oldParent] [newParent]`
 
 #### Remove children from parent
-Removes children from a parent region.
+Removes children from a parent region. Region does not have any children after this
 
 Affects all regions, which are a child of this region.  
 `/wgb crem [parent]`
@@ -127,3 +128,13 @@ Affects all regions matching the count pattern
 
 Affects all regions matching the regex pattern  
 `/wgb prem regex [regex pattern]`
+
+### Flags
+Manage flags.
+#### Set Flags
+Affects
+`/wgb fset regex [regex pattern] [flagname] [flagvalue]`
+`/wgb frem regex [regex pattern] [flagname]`
+
+
+#### Remove Flags
