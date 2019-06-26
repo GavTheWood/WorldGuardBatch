@@ -3,100 +3,127 @@
 Plugin to execute batch commands in WorldGuard
 
 ## Commands
+Commands are executed in world context. The command is only applied to regions in the current world.
+
+Regions can by identified with an auto increment counter and regex for the name or by owner of the region.
+
+Auto increment works with a placeholder and one or two bounds.  
+To select region_1 to region_100 you have to write:  
+`/<command> count region_\* 1 100`  
+You dont have to type the first number, if it is zero.
+
+Regex is a bit more complex. Google will be your friend.
+
 ### Membership
-#### Remove Player
+Commands to change the Membership of regions.
+Possible scope is Member change, Owner change and both (All)
 
-- Remove Player from all Regions\
-/wgb mrem all    [playerToRemove]
-- Remove Player as Member from all Regions\
-/wgb mrem member [playerToRemove]
-- Remove Player as Owner from all Regions\
-/wgb mrem owner  [playerToRemove]
+#### Remove Membership
+The prefix for membership removal is `mrem`  
+General pattern:  
+`/wgb mrem [all/member/owner] [playerToRemove] <count/regex/owner> <args>`
 
-- Remove Player from all Regions with name pattern\
-/wgb mrem all    [playerToRemove] count [name] [count1] [count2]
-- Remove Player as Member from Regions with name pattern\
-/wgb mrem member [playerToRemove] count [name] [count1] [count2]
-- Remove Player as Owner from Regions with name pattern\
-/wgb mrem owner  [playerToRemove] count [name] [count1] [count2]
+##### General removal
+Removes a player from a region. Affects all regions in the current world.  
+`/wgb mrem [all/member/owner] [playerToRemove]`
 
-- Remove Player from all Regions with name pattern\
-/wgb mrem all    [playerToRemove] regex [name]
-- Remove Player as Member from Regions with name pattern\
-/wgb mrem member [playerToRemove] regex [name]
-- Remove Player as Owner from Regions with name pattern\
-/wgb mrem owner  [playerToRemove] regex [name]
+##### Removes with auto increment selection
+`/wgb mrem [all/member/owner] [playerToRemove] count [name] [count1] <count2>`
 
-- Remove Player on all Regions owned by player\
-/wgb mrem all    [playerToRemove] owner [owner]
-- Remove Player as Member on all Regions owned by player\
-/wgb mrem member [playerToRemove] owner [owner]
-- Remove Player as Owner on all Regions owned by player\
-/wgb mrem owner  [playerToRemove] owner [owner]
+##### Remove a player from a region with regex
+Affects all regions, which names matches the regex pattern.  
+`/wgb mrem [all/member/owner] [playerToRemove] regex [regex pattern]`
 
-#### Add Player
-- Add Player as Member on all Regions\
-/wgb madd member [playerToAdd]
-- Add Player as Owner from all Regions\
-/wgb madd owner  [playerToAdd]
+##### Remove a player from regions owned by a specific player
+Affects all regions, which are owned by the player. Owned means owner not Member.  
+`/wgb mrem [all/member/owner] [playerToRemove] owner [owner]`
 
-- Add Player as Member on Regions with name pattern\
-/wgb madd member [playerToAdd] count [name] [count1] [count2]
-- Add Player as Owner on Regions with name pattern\
-/wgb madd owner  [playerToAdd] count [name] [count1] [count2]
 
-- Add Player as Member on Regions with name pattern\
-/wgb madd member [playerToAdd] regex [name]
-- Add Player as Owner on Regions with name pattern\
-/wgb madd owner  [playerToAdd] regex [name]
+#### Add Membership
+The prefix for membership assignment is `madd`:  
+A player can be added as owner or member of a region.  
+General pattern:  
+`/wgb madd [member/owner] [playerToAdd] <count/regex/owner> <args>`
 
-- Add Player as Member on all Regions owned by player\
-/wgb madd member [playerToAdd] owner [owner]
-- Add Player as Owner on all Regions owned by player\
-/wgb madd owner  [playerToAdd] owner [owner]
+##### General membership assignment
+Assigns a player as member or owner to all regions.  
+`/wgb madd [member/owner] [playerToAdd]`
+
+##### Assign membership with auto increment selection
+Assigns a player as member or owner to all regions, which matches the name pattern.  
+`/wgb madd [member/owner] [playerToAdd] count [name] [count1] [count2]`
+
+##### Assign membership with regex selection
+Assign a player as member or owner to all regions, which matches the regex pattern.  
+`/wgb madd [member/owner] [playerToAdd] regex [regex pattern]`
+
+##### Assign membership by owner
+Assigns a player as owner or member to all regions owned by another specific player.  
+`/wgb madd [member/owner] [playerToAdd] owner [owner]`
+
 
 #### Transfer Membership
-- Transfers membership from all region of a player to a player\
-/wgb mtrans all [oldPlayer] [newPlayer]
-- Transfers only membership from all region of a player to a player\
-/wbg mtrans member [oldMember] [newMember]
-- Transfers only ownership from all region of a player to a player\
-/wbg mtrans owner [oldOwner] [newOwner]
+Transfers a membership from a player to another player.  
+Owner gives the new Player owner, where the old player was the owner.  
+Member give the new player member, where the old player was the member.  
+All gives the new player the same membership, which the old player had.  
+`/wgb mtrans [all/member/owner] [oldPlayer] [newPlayer]`
+
 
 ### Priority
-- Set priority on all Regions\
-/wgb prio [priority]
-- Set priority on all Regions with parent\
-/wgb prio [priority] parent [regionid]
-- Set priority on all Regions with pattern\
-/wgb prio [priority] count [name] [count1] [count2]
-- Set priority on all regions with pattern\
-/wgb prio [priority] regex [name]
+Changes the priotity of a region.  
+The priority must be a number between 0 and 10.  
+The region can by selected by parent, counter name and regex.  
+
+Affects all regions.  
+`/wgb prio [priority]`
+
+Affects all regions, which are a child of the region.  
+`/wgb prio [priority] parent [regionid]`
+
+Affects all regions, which matches the count pattern.  
+`/wgb prio [priority] count [name] [count1] [count2]`
+
+Affects all regions, which matches the regex pattern.  
+`/wgb prio [priority] regex [regex pattern]`
 
 
 ### Parent/Inheritance
-- Set parent on all Regions\
-/wgb pset [parent]
-- Set parent on all Regions with pattern\
-/wgb pset [parent] regex [name]
-- Set parent on all Regions with pattern\
-/wgb pset [parent] count [name]
+#### Assign parent
+Assign a parent to a region. Old parent is removed.  
 
-- Set parent to region on all Regions with pattern\
-/wgb pset [child] [parent] count [name] [count1] [count2]
-- Set parent to region on all Regions with pattern\
-/wgb pset [child] [parent] regex [name]
+Affects all regions.  
+`/wgb pset [parent]`
 
-- Remove all childs from parent
-/wgb crem [parent]
-- Remove all child from parent with pattern\
-/wgb crem [parent] count [name] [count1] [count2]
-- Remove all child from parent with pattern\
-/wgb crem [parent] regex [name]
+Affects all region which matches the regex pattern.  
+`/wgb pset [parent] regex [regex pattern]`
+
+Affects all region which matches the count pattern.  
+`/wgb pset [parent] count [name] [count1] [count2]`
 
 
-- Remove parent from all regions with pattern\
-/wgb prem count [name] [count1] [count2]
-- Remove parent from all regions with pattern\
-/wgb prem regex [name]
+#### Change parent
+Changes the current parent to a new parent  
+`/wgb pset [oldParent] [newParent]`
 
+#### Remove children from parent
+Removes children from a parent region.
+
+Affects all regions, which are a child of this region.  
+`/wgb crem [parent]`
+
+Affects all regions, which are a child of this region and matches the count pattern.  
+`/wgb crem [parent] count [name] [count1] [count2]`
+
+Affects all regions, which are a child of this region and matches the regex pattern.  
+`/wgb crem [parent] regex [regex pattern]`
+
+
+#### Remove parent from regions
+Removes the parent from regions. Region doesn't have a parent after this operation.
+
+Affects all regions matching the count pattern  
+`/wgb prem count [name] [count1] [count2]`
+
+Affects all regions matching the regex pattern  
+`/wgb prem regex [regex pattern]`
