@@ -10,9 +10,9 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 public class RegionLoader {
@@ -41,18 +41,13 @@ public class RegionLoader {
      * @return List of regions, where the player is a member or owner.
      */
     public List<ProtectedRegion> getRegionsFromPlayerInWorld(org.bukkit.World world, String playerName) {
-        List<ProtectedRegion> result = new ArrayList<>();
 
         var regions = getRegionsFromWorld(BukkitAdapter.adapt(world));
 
         var p = getLocalPlayerFromName(playerName);
 
-        for (ProtectedRegion region : regions.values()) {
-            if (region.isMember(p)) {
-                result.add(region);
-            }
-        }
-        return result;
+
+        return filterRegion(regions.values(), (region -> region.isMember(p)));
     }
 
     /**
@@ -121,6 +116,12 @@ public class RegionLoader {
         return result;
     }
 
+    private List<ProtectedRegion> filterRegion(Collection<ProtectedRegion> regions, Predicate<ProtectedRegion> filter) {
+        return regions.stream()
+                .filter(filter).collect(Collectors.toList());
+
+    }
+
 
     /**
      * Find the regions, where the names match a count up pattern. The counter is inserted at a '*'
@@ -131,18 +132,19 @@ public class RegionLoader {
      * @param boundMax end number of counter - exclusive
      * @return Returns list of regions with matching name pattern.
      */
-    public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world, String name, int boundMin, int boundMax) {
+    public List<ProtectedRegion> getRegionsWithNameCountUp(org.bukkit.World world,
+                                                           String name, int boundMin, int boundMax) {
         List<ProtectedRegion> result = new ArrayList<>();
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
         if (worldContainer == null) {
             //TODO: World not found? But how?
-            return result;
+            return Collections.emptyList();
         }
 
         var regions = worldContainer.getRegions();
 
-        for (int i = boundMin; i < boundMax + 1; i++) {
+        for (int i = boundMin; i < boundMax; i++) {
             var num = String.valueOf(i);
 
             var regName = name.replace("*", num);
@@ -154,13 +156,20 @@ public class RegionLoader {
         return result;
     }
 
+    /**
+     * Get all regions which are a child of a region.
+     *
+     * @param world world for lookup
+     * @param name  name of the parent
+     * @return list of children of the parent.
+     */
     public List<ProtectedRegion> getAllChildsOfRegionInWorld(org.bukkit.World world, String name) {
         List<ProtectedRegion> result = new ArrayList<>();
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
         if (worldContainer == null) {
             //TODO: World not found? But how?
-            return result;
+            return Collections.emptyList();
         }
 
         var regions = worldContainer.getRegions();
@@ -173,7 +182,36 @@ public class RegionLoader {
         return result;
     }
 
-    private LocalPlayer getLocalPlayerFromName(String name) {
+    /**
+     * Get all regions in a world.
+     *
+     * @param world world for lookup
+     * @return List of all regions in the world.
+     */
+    public List<ProtectedRegion> getRegionsInWorld(org.bukkit.World world) {
+        List<ProtectedRegion> result = new ArrayList<>();
+
+        var worldContainer = regionContainer.get(BukkitAdapter.adapt(world));
+
+        if (worldContainer == null) {
+            //TODO: World not found? But how?
+            return result;
+        }
+
+        var regions = worldContainer.getRegions();
+
+        result.addAll(regions.values());
+
+        return result;
+    }
+
+    /**
+     * Get a local player object from a string.
+     *
+     * @param name name to lookup
+     * @return Local Player object. Null if the player never joined the server.
+     */
+    public static LocalPlayer getLocalPlayerFromName(String name) {
         if (name == null || name.equalsIgnoreCase("")) {
             //TODO: No player name given.
             return null;
