@@ -1,9 +1,5 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownFlagError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendWrongFlagValueError;
-
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldguard.WorldGuard;
@@ -19,6 +15,8 @@ import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
+
+import static de.eldoria.worldguardbatch.messages.MessageSender.*;
 
 public class FlagManager implements Subcommand {
     private RegionLoader regionLoader;
@@ -70,10 +68,13 @@ public class FlagManager implements Subcommand {
         regions.forEach(region -> {
             try {
                 setFlag(region, flag, actor, inputValue);
+                sendModifiedMessage(sender, region.getId());
             } catch (InvalidFlagFormat e) {
                 sendWrongFlagValueError(sender);
             }
         });
+
+        sendTotalModifiedMessage(sender, regions.size());
     }
 
     private static <V> void setFlag(ProtectedRegion region, Flag<V> flag, Actor sender, String value)

@@ -3,19 +3,7 @@ package de.eldoria.worldguardbatch.messages;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import org.bukkit.entity.Player;
 
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_INVALID_NUMBERS;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_NO_REGIONS_FOUND;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_UNKNOWN_COMMAND;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_UNKNOWN_FLAG;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_UNKNOWN_PLAYER;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_WORLD_NOT_FOUND;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_WRONG_FLAG_VALUE;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorTooFewArguments;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorTooManyArguments;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorUnknownCheckArgument;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorUnknownMembershipScope;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorUnknownRegionQuery;
-import static de.eldoria.worldguardbatch.messages.MessagesLib.getRegionNotFound;
+import static de.eldoria.worldguardbatch.messages.MessagesLib.*;
 
 public class MessageSender {
 
@@ -104,6 +92,14 @@ public class MessageSender {
 
     private static void sendError(Player p, String message) {
         p.sendMessage(message);
+    }
+
+    public static void sendModifiedMessage(Player p, String region) {
+        p.sendMessage("Region " + region + " modified.");
+    }
+
+    public static void sendTotalModifiedMessage(Player p, int count) {
+        p.sendMessage("Modified " + count + " regions!");
     }
 
 }

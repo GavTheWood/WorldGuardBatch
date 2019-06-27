@@ -80,7 +80,7 @@ public class ParentManager implements Subcommand {
             return;
         }
 
-        setParents(regions, parent);
+        setParents(sender, regions, parent);
     }
 
     private void removeParent(Player sender, String[] args, PrimaryActionArgument pArg) {
@@ -107,7 +107,7 @@ public class ParentManager implements Subcommand {
                 return;
             }
 
-            setParents(regions, null);
+            setParents(sender, regions, null);
         }
     }
 
@@ -143,6 +143,7 @@ public class ParentManager implements Subcommand {
                 if (parent != null && parent.getId().equalsIgnoreCase(args[1])) {
                     try {
                         region.setParent(null);
+                        sendModifiedMessage(sender, region.getId());
                     } catch (ProtectedRegion.CircularInheritanceException e) {
                         //This will never happen... EVER!
                     }
@@ -152,7 +153,7 @@ public class ParentManager implements Subcommand {
         }
         regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[1]);
 
-        setParents(regions, null);
+        setParents(sender, regions, null);
     }
 
     private void setParent(Player sender, String[] args, PrimaryActionArgument pArg) {
@@ -183,13 +184,14 @@ public class ParentManager implements Subcommand {
             }
         }
 
-        setParents(regions, parent);
+        setParents(sender, regions, parent);
     }
 
-    private void setParents(Collection<ProtectedRegion> collection, ProtectedRegion parent) {
+    private void setParents(Player p, Collection<ProtectedRegion> collection, ProtectedRegion parent) {
         collection.forEach(region -> {
             try {
                 region.setParent(parent);
+                sendModifiedMessage(p, region.getId());
             } catch (ProtectedRegion.CircularInheritanceException e) {
                 //This will never happen... EVER!
             }

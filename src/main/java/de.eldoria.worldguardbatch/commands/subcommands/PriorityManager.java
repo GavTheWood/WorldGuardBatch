@@ -1,9 +1,5 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
-
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
@@ -15,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+
+import static de.eldoria.worldguardbatch.messages.MessageSender.*;
 
 public class PriorityManager implements Subcommand {
     private RegionLoader regionLoader;
@@ -86,7 +84,10 @@ public class PriorityManager implements Subcommand {
     private void changePriorityByParent(Player sender, String[] args, int prio) {
         var regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[3]);
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            sendModifiedMessage(sender, region.getId());
+        });
     }
 
     private void changePriorityByCount(Player sender, String[] args, int prio) {
@@ -112,18 +113,27 @@ public class PriorityManager implements Subcommand {
             regions = regionLoader.getRegionsWithNameCountUp(sender, args[3], range);
         }
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            sendModifiedMessage(sender, region.getId());
+        });
     }
 
     private void changePriority(Player sender, int prio) {
         var regions = regionLoader.getRegionsInWorld(sender);
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            sendModifiedMessage(sender, region.getId());
+        });
     }
 
     private void changePriorityByRegex(Player sender, String[] args, int prio) {
         var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[3]);
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            sendModifiedMessage(sender, region.getId());
+        });
     }
 }
