@@ -1,10 +1,14 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownCheckArgumentError;
+
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.CheckArgument;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.util.IntRange;
 import org.bukkit.entity.Player;
 
@@ -30,20 +34,20 @@ public class CheckSubcommand implements Subcommand {
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
 
         if (args.length < 2) {
-            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            sendTooFewArgumentError(sender, pArg);
             return;
         }
 
         CheckArgument checkArg = CheckArgument.getCheckScope(args[1]);
 
         if (checkArg == CheckArgument.NONE) {
-            sender.sendMessage(Messages.getErrorUnknownCheckArgument(pArg));
+            sendUnkownCheckArgumentError(sender, pArg);
             return;
         }
 
         List<ProtectedRegion> regions = Collections.emptyList();
         if (checkArg != CheckArgument.ALL && args.length < 3) {
-            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            sendTooFewArgumentError(sender, pArg);
             return;
         }
         switch (checkArg) {
@@ -55,14 +59,14 @@ public class CheckSubcommand implements Subcommand {
                 if (args.length == 3) {
                     regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[2]);
                 } else {
-                    Messages.sendArgumentMessage(sender, pArg, args, 3);
+                    MessageSender.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             case REGEX:
                 if (args.length == 3) {
                     regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
                 } else {
-                    Messages.sendArgumentMessage(sender, pArg, args, 3);
+                    MessageSender.sendArgumentMessage(sender, pArg, args, 3);
                     return;
                 }
                 break;
@@ -72,25 +76,19 @@ public class CheckSubcommand implements Subcommand {
                     try {
                         range = IntRange.parseString(args[3], null);
                     } catch (NumberFormatException e) {
-                        sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                        sendInvalidNumberError(sender);
                         return;
                     }
                 } else if (args.length == 5) {
                     try {
                         range = IntRange.parseString(args[3], args[4]);
                     } catch (NumberFormatException e) {
-                        sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                        sendInvalidNumberError(sender);
                         return;
                     }
 
                 } else {
-                    if (args.length < 4) {
-                        sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
-                    }
-                    if (args.length > 5) {
-                        sender.sendMessage(Messages.getErrorTooManyArguments(pArg));
-                    }
-
+                    MessageSender.sendArgumentMessage(sender, pArg, args, 4,5);
                     return;
                 }
 
@@ -106,13 +104,11 @@ public class CheckSubcommand implements Subcommand {
         sender.sendMessage("Query found " + regions.size() + " regions.");
 
         if (PrimaryActionArgument.getPrimary(args[0]) == PrimaryActionArgument.LIST) {
-            StringJoiner stringJoiner = new StringJoiner("\n");
+            StringJoiner stringJoiner = new StringJoiner(System.lineSeparator());
 
             regions.forEach(region -> stringJoiner.add(region.getId()));
 
-            sender.sendMessage("Affected Region:\n" + stringJoiner.toString());
+            sender.sendMessage("Affected Region:" + System.lineSeparator() + stringJoiner.toString());
         }
-
-        return;
     }
 }
