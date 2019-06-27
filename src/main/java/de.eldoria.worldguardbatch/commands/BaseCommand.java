@@ -2,7 +2,11 @@ package de.eldoria.worldguardbatch.commands;
 
 import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
-import de.eldoria.worldguardbatch.commands.subcommands.*;
+import de.eldoria.worldguardbatch.commands.subcommands.CheckSubcommand;
+import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
+import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
+import de.eldoria.worldguardbatch.commands.subcommands.ParentManager;
+import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -90,7 +94,7 @@ public class BaseCommand implements CommandExecutor {
 
     private void executeHelpCommand(Player p) {
         StringJoiner stringJoiner = new StringJoiner("\n");
-        
+
         for (PrimaryActionArgument arg : PrimaryActionArgument.values()) {
             Messages.CommandText cmdText = Messages.getCommandText(arg);
             if (cmdText != null) {

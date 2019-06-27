@@ -11,11 +11,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class CheckSubCommand implements Subcommand {
+public class CheckSubcommand implements Subcommand {
 
     private RegionLoader regionLoader;
 
-    public CheckSubCommand(RegionLoader regionLoader) {
+    /**
+     * Creates a new Check Subcommand instance.
+     *
+     * @param regionLoader
+     */
+    public CheckSubcommand(RegionLoader regionLoader) {
 
         this.regionLoader = regionLoader;
     }
@@ -44,7 +49,7 @@ public class CheckSubCommand implements Subcommand {
             case ALL:
                 regions = regionLoader.getRegionsInWorld(sender.getWorld());
                 break;
-            case CHILDS:
+            case CHILDREN:
                 if (args.length == 3) {
                     regions = regionLoader.getAllChildsOfRegionInWorld(sender.getWorld(), args[2]);
                 } else {
@@ -78,7 +83,7 @@ public class CheckSubCommand implements Subcommand {
 
         sender.sendMessage("Query found " + regions.size() + " regions.");
 
-        if(PrimaryActionArgument.getPrimary(args[0]) == PrimaryActionArgument.LIST){
+        if (PrimaryActionArgument.getPrimary(args[0]) == PrimaryActionArgument.LIST) {
             StringJoiner stringJoiner = new StringJoiner("\n");
 
             regions.forEach(region -> stringJoiner.add(region.getId()));
