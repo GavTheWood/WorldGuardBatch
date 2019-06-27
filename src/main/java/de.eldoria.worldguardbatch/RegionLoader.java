@@ -1,5 +1,7 @@
 package de.eldoria.worldguardbatch;
 
+import static de.eldoria.worldguardbatch.messages.MessageSender.*;
+
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
@@ -38,6 +40,33 @@ public class RegionLoader {
     }
 
     /**
+     * Get a local player object from a string.
+     *
+     * @param name name to lookup
+     * @return Local Player object. Null if the player never joined the server.
+     */
+    @Nullable
+    public static LocalPlayer getLocalPlayerFromName(String name) {
+        if (name == null || name.isEmpty()) {
+
+            return null;
+        }
+
+        var player = Bukkit.getPlayer(name);
+
+        if (player == null) {
+            var oPlayer = Bukkit.getOfflinePlayers();
+            for (OfflinePlayer p : oPlayer) {
+                if (p.getName().equalsIgnoreCase(name)) {
+                    player = p.getPlayer();
+                }
+            }
+        }
+
+        return WorldGuardPlugin.inst().wrapPlayer(player);
+    }
+
+    /**
      * Finds all regions where a specific Player is member or owner in a world.
      *
      * @param sender     sender of the command.
@@ -51,7 +80,7 @@ public class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            sender.sendMessage(MessagesLib.ERROR_UNKNOWN_PLAYER);
+            sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -71,7 +100,7 @@ public class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            sender.sendMessage(MessagesLib.ERROR_UNKNOWN_PLAYER);
+            sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -91,7 +120,7 @@ public class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            sender.sendMessage(MessagesLib.ERROR_UNKNOWN_PLAYER);
+            sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -139,7 +168,7 @@ public class RegionLoader {
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
         if (worldContainer == null) {
-            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
+            sendWorldNotFoundError(sender);
             return Collections.emptyList();
         }
 
@@ -168,7 +197,7 @@ public class RegionLoader {
     public List<ProtectedRegion> getAllChildsOfRegionInWorld(Player sender, String name) {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
         if (worldContainer == null) {
-            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
+            sendWorldNotFoundError(sender);
             return Collections.emptyList();
         }
 
@@ -189,7 +218,7 @@ public class RegionLoader {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
 
         if (worldContainer == null) {
-            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
+            sendWorldNotFoundError(sender);
             return result;
         }
 
@@ -211,7 +240,7 @@ public class RegionLoader {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
 
         if (worldContainer == null) {
-            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
+            sendWorldNotFoundError(sender);
             return null;
         }
 
@@ -234,31 +263,5 @@ public class RegionLoader {
 
     }
 
-    /**
-     * Get a local player object from a string.
-     *
-     * @param name name to lookup
-     * @return Local Player object. Null if the player never joined the server.
-     */
-    @Nullable
-    public static LocalPlayer getLocalPlayerFromName(String name) {
-        if (name == null || name.isEmpty()) {
-
-            return null;
-        }
-
-        var player = Bukkit.getPlayer(name);
-
-        if (player == null) {
-            var oPlayer = Bukkit.getOfflinePlayers();
-            for (OfflinePlayer p : oPlayer) {
-                if (p.getName().equalsIgnoreCase(name)) {
-                    player = p.getPlayer();
-                }
-            }
-        }
-
-        return WorldGuardPlugin.inst().wrapPlayer(player);
-    }
 
 }
