@@ -1,6 +1,7 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
@@ -26,63 +27,63 @@ public class ParentManager implements Subcommand {
     }
 
     @Override
-    public boolean directCommand(Player sender, String[] args) {
-        if (args.length == 1) return false;
+    public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
+        if (args.length == 1) {
+            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            return;
+        }
 
         var primary = PrimaryActionArgument.getPrimary(args[0]);
 
-        RegionIdentificationArgument regionIdentificationArgument = RegionIdentificationArgument.NONE;
+        RegionIdentificationArgument regionIdentificationArgument;
 
         if (args.length > 2) {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[2]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE) {
-                //TODO: Invalid identification arg.
-                return false;
+                sender.sendMessage(Messages.getErrorUnknownRegionQuery(pArg));
+                return;
             }
         }
 
         switch (primary) {
             case PSET:
-                setParent(sender, args);
+                setParent(sender, args, pArg);
                 break;
             case CREM:
-                removeChildren(sender, args);
+                removeChildren(sender, args, pArg);
                 break;
             case PREM:
-                removeParent(sender, args);
+                removeParent(sender, args, pArg);
                 break;
             case PCH:
                 if (args.length == 3) {
                     changeParent(sender, args);
                 } else {
-                    //TODO: Too many arguments.
+                    Messages.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + primary);
         }
-
-
-        return true;
     }
 
     private void changeParent(Player sender, String[] args) {
-        var regions = regionLoader.getAllChildsOfRegionInWorld(sender.getWorld(), args[1]);
+        var regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[1]);
 
-        var parent = regionLoader.getRegionInWorld(sender.getWorld(), args[1]);
+        var parent = regionLoader.getRegionInWorld(sender, args[1]);
 
         if (parent == null) {
-            //TODO: new parent does not exist.
+            sender.sendMessage(Messages.getRegionNotFound(args[1]));
             return;
         }
 
         setParents(regions, parent);
     }
 
-    private void removeParent(Player sender, String[] args) {
+    private void removeParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 3) {
-            //TODO: Too few arguments.
+            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
             return;
         }
         RegionIdentificationArgument regionIdentificationArgument =
@@ -90,9 +91,9 @@ public class ParentManager implements Subcommand {
 
         List<ProtectedRegion> regions;
         if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
-            regions = getCountUpRegions(sender.getWorld(), args, 2);
+            regions = getCountUpRegions(sender, sender.getWorld(), args, 2);
             if (regions.isEmpty()) {
-                //TODO: No regions found.
+                sender.sendMessage(Messages.ERROR_NO_REGIONS_FOUND);
             }
         } else if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
             if (args.length == 3) {
@@ -100,7 +101,7 @@ public class ParentManager implements Subcommand {
 
 
             } else {
-                //TODO: too many arguments
+                sender.sendMessage(Messages.getErrorTooManyArguments(pArg));
                 return;
             }
 
@@ -108,9 +109,9 @@ public class ParentManager implements Subcommand {
         }
     }
 
-    private void removeChildren(Player sender, String[] args) {
+    private void removeChildren(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            //TODO: too few arguments.
+            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
             return;
         }
 
@@ -124,13 +125,13 @@ public class ParentManager implements Subcommand {
                 regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
 
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
-                regions = getCountUpRegions(sender.getWorld(), args, 3);
+                regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
                 if (regions.isEmpty()) {
-                    //TODO: No regions found.
+                    sender.sendMessage(Messages.ERROR_NO_REGIONS_FOUND);
                 }
 
             } else {
-                //TODO: Invalid Region identification
+                sender.sendMessage(Messages.getErrorUnknownRegionQuery(pArg));
                 return;
             }
 
@@ -146,20 +147,20 @@ public class ParentManager implements Subcommand {
             });
             return;
         }
-        regions = regionLoader.getAllChildsOfRegionInWorld(sender.getWorld(), args[1]);
+        regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[1]);
 
         setParents(regions, null);
     }
 
-    private void setParent(Player sender, String[] args) {
+    private void setParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            //TODO: Too few arguments.
+            Messages.sendArgumentMessage(sender, pArg, args, 2);
             return;
         }
-        var parent = regionLoader.getRegionInWorld(sender.getWorld(), args[1]);
+        var parent = regionLoader.getRegionInWorld(sender, args[1]);
         List<ProtectedRegion> regions;
         if (args.length == 2) {
-            regions = regionLoader.getRegionsInWorld(sender.getWorld());
+            regions = regionLoader.getRegionsInWorld(sender);
 
 
         } else {
@@ -169,12 +170,12 @@ public class ParentManager implements Subcommand {
             if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
                 regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
                 if (regions.isEmpty()) {
-                    //TODO: No regions found.
+                    sender.sendMessage(Messages.ERROR_NO_REGIONS_FOUND);
                 }
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
-                regions = getCountUpRegions(sender.getWorld(), args, 3);
+                regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
             } else {
-                //TODO: No Identifier found.
+                sender.sendMessage(Messages.getErrorUnknownRegionQuery(pArg));
                 return;
             }
         }
@@ -192,17 +193,30 @@ public class ParentManager implements Subcommand {
         });
     }
 
-    private List<ProtectedRegion> getCountUpRegions(org.bukkit.World world,
+    private List<ProtectedRegion> getCountUpRegions(Player sender, org.bukkit.World world,
                                                     String[] args, int nameIndex) {
         List<ProtectedRegion> regions = Collections.emptyList();
+        IntRange range;
         if (args.length == nameIndex + 2) {
-            var range = IntRange.parseString(args[nameIndex + 1], null);
+            try {
+                range = IntRange.parseString(args[nameIndex + 1], null);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                return Collections.emptyList();
+            }
+
             regions = regionLoader
-                    .getRegionsWithNameCountUp(world, args[nameIndex], range);
+                    .getRegionsWithNameCountUp(sender, args[nameIndex], range);
         } else if (args.length == nameIndex + 3) {
-            var range = IntRange.parseString(args[nameIndex + 1], args[nameIndex + 2]);
+            try {
+                range = IntRange.parseString(args[nameIndex + 1], args[nameIndex + 2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                return Collections.emptyList();
+            }
+
             regions = regionLoader
-                    .getRegionsWithNameCountUp(world, args[nameIndex], range);
+                    .getRegionsWithNameCountUp(sender, args[nameIndex], range);
         }
         return regions;
     }

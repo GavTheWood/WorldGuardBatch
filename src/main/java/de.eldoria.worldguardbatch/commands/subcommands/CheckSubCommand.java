@@ -1,6 +1,7 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.CheckArgument;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
@@ -18,7 +19,7 @@ public class CheckSubcommand implements Subcommand {
     /**
      * Creates a new Check Subcommand instance.
      *
-     * @param regionLoader
+     * @param regionLoader region loader instance
      */
     public CheckSubcommand(RegionLoader regionLoader) {
 
@@ -26,59 +27,80 @@ public class CheckSubcommand implements Subcommand {
     }
 
     @Override
-    public boolean directCommand(Player sender, String[] args) {
+    public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
+
         if (args.length < 2) {
-            //TODO: Too few arguments.
-            return true;
+            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            return;
         }
 
         CheckArgument checkArg = CheckArgument.getCheckScope(args[1]);
 
         if (checkArg == CheckArgument.NONE) {
-            //TODO: No valid check.
-            return true;
+            sender.sendMessage(Messages.getErrorUnknownCheckArgument(pArg));
+            return;
         }
 
         List<ProtectedRegion> regions = Collections.emptyList();
         if (checkArg != CheckArgument.ALL && args.length < 3) {
-            //TODO: Too few arguments.
-            return true;
+            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            return;
         }
         switch (checkArg) {
 
             case ALL:
-                regions = regionLoader.getRegionsInWorld(sender.getWorld());
+                regions = regionLoader.getRegionsInWorld(sender);
                 break;
             case CHILDREN:
                 if (args.length == 3) {
-                    regions = regionLoader.getAllChildsOfRegionInWorld(sender.getWorld(), args[2]);
+                    regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[2]);
                 } else {
-                    //TODO: wrong arguments.
+                    Messages.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             case REGEX:
                 if (args.length == 3) {
                     regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
                 } else {
-                    //TODO: wrong arguments.
+                    Messages.sendArgumentMessage(sender, pArg, args, 3);
+                    return;
                 }
                 break;
             case COUNT:
                 IntRange range;
                 if (args.length == 4) {
-                    range = IntRange.parseString(args[3], null);
+                    try {
+                        range = IntRange.parseString(args[3], null);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                        return;
+                    }
                 } else if (args.length == 5) {
-                    range = IntRange.parseString(args[3], args[4]);
+                    try {
+                        range = IntRange.parseString(args[3], args[4]);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                        return;
+                    }
+
                 } else {
-                    //TODO: Wrong arguments.
-                    return true;
+                    if (args.length < 4) {
+                        sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+                    }
+                    if (args.length > 5) {
+                        sender.sendMessage(Messages.getErrorTooManyArguments(pArg));
+                    }
+
+                    return;
                 }
 
-                regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[2], range);
+                regions = regionLoader.getRegionsWithNameCountUp(sender, args[2], range);
                 break;
             case OWNER:
-                regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[2]);
+                regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender, args[2]);
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + checkArg);
         }
 
         sender.sendMessage("Query found " + regions.size() + " regions.");
@@ -91,6 +113,6 @@ public class CheckSubcommand implements Subcommand {
             sender.sendMessage("Affected Region:\n" + stringJoiner.toString());
         }
 
-        return true;
+        return;
     }
 }

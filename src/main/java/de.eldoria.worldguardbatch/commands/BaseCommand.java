@@ -46,47 +46,41 @@ public class BaseCommand implements CommandExecutor {
 
         if (args.length == 0) {
             //TODO: Info command
+            return true;
         }
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("help")) {
-                executeHelpCommand(p);
-                return true;
-            }
-        }
-        if (args.length > 1) {
-            var primaryArg = PrimaryActionArgument.getPrimary(args[0]);
+        var primaryArg = PrimaryActionArgument.getPrimary(args[0]);
 
-            switch (primaryArg) {
-                case NONE:
-                    //TODO: No valid argument found.
-                    break;
-                case MADD:
-                case MTRANS:
-                case MREM:
-                    membershipManager.directCommand(p, args);
-                    break;
-                case PRIO:
-                    priorityManager.directCommand(p, args);
-                    break;
-                case PCH:
-                case PSET:
-                case CREM:
-                case PREM:
-                    parentManager.directCommand(p, args);
-                    break;
-                case FSET:
-                case FREM:
-                    flagManager.directCommand(p, args);
-                    break;
-                case CHECK:
-                case LIST:
-                    checkSubCommand.directCommand(p, args);
-                    break;
-                case HELP:
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + primaryArg);
-            }
+        switch (primaryArg) {
+            case NONE:
+                p.sendMessage(Messages.getErrorUnknownCommand());
+                break;
+            case MADD:
+            case MTRANS:
+            case MREM:
+                membershipManager.directCommand(p, primaryArg, args);
+                break;
+            case PRIO:
+                priorityManager.directCommand(p, primaryArg, args);
+                break;
+            case PCH:
+            case PSET:
+            case CREM:
+            case PREM:
+                parentManager.directCommand(p, primaryArg, args);
+                break;
+            case FSET:
+            case FREM:
+                flagManager.directCommand(p, primaryArg, args);
+                break;
+            case CHECK:
+            case LIST:
+                checkSubCommand.directCommand(p, primaryArg, args);
+                break;
+            case HELP:
+                executeHelpCommand(p);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + primaryArg);
         }
 
         return true;

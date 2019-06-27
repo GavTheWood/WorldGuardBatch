@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import lombok.NonNull;
@@ -32,16 +33,16 @@ public class FlagManager implements Subcommand {
     }
 
     @Override
-    public boolean directCommand(Player sender, String[] args) {
+    public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 4) {
-            //TODO: Too few arguments.
-            return true;
+            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            return;
         }
 
         var flag = Flags.fuzzyMatchFlag(flagRegistry, args[3]);
 
         if (flag == null) {
-            //TODO: flag not found.
+            sender.sendMessage(Messages.ERROR_UNKNOWN_FLAG);
         }
 
         PrimaryActionArgument paa = PrimaryActionArgument.getPrimary(args[0]);
@@ -67,11 +68,11 @@ public class FlagManager implements Subcommand {
             try {
                 setFlag(region, flag, actor, inputValue);
             } catch (InvalidFlagFormat e) {
-                //TODO: Invalid value.
+                sender.sendMessage(Messages.ERROR_WRONG_FLAG_VALUE);
             }
         });
 
-        return false;
+        return;
     }
 
     private Optional<Flag<?>> getFlag(String flagName) {
