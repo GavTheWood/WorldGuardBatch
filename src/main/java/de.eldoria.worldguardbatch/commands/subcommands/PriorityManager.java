@@ -1,10 +1,14 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
+
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
@@ -27,7 +31,7 @@ public class PriorityManager implements Subcommand {
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            sendTooFewArgumentError(sender, pArg);
             return;
         }
 
@@ -38,7 +42,7 @@ public class PriorityManager implements Subcommand {
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE
                     || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
-                sender.sendMessage(Messages.getErrorUnknownRegionQuery(pArg));
+                sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -48,7 +52,7 @@ public class PriorityManager implements Subcommand {
         try {
             prio = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+            sendInvalidNumberError(sender);
             return;
         }
 
@@ -60,7 +64,7 @@ public class PriorityManager implements Subcommand {
                 if (args.length == 4) {
                     changePriorityByRegex(sender, args, prio);
                 } else {
-                    Messages.sendArgumentMessage(sender, pArg, args, 4);
+                    MessageSender.sendArgumentMessage(sender, pArg, args, 4);
                     return;
                 }
                 break;
@@ -92,7 +96,7 @@ public class PriorityManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[4], null);
             } catch (NumberFormatException e) {
-                sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                sendInvalidNumberError(sender);
                 return;
             }
 
@@ -101,7 +105,7 @@ public class PriorityManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[4], args[5]);
             } catch (NumberFormatException e) {
-                sender.sendMessage(Messages.ERROR_INVALID_NUMBERS);
+                sendInvalidNumberError(sender);
                 return;
             }
 

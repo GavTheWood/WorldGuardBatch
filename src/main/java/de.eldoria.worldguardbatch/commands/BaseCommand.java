@@ -1,12 +1,14 @@
 package de.eldoria.worldguardbatch.commands;
 
-import de.eldoria.worldguardbatch.Messages;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownCommandError;
+
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.subcommands.CheckSubcommand;
 import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
 import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
 import de.eldoria.worldguardbatch.commands.subcommands.ParentManager;
 import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
+import de.eldoria.worldguardbatch.messages.MessagesLib;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -52,7 +54,7 @@ public class BaseCommand implements CommandExecutor {
 
         switch (primaryArg) {
             case NONE:
-                p.sendMessage(Messages.getErrorUnknownCommand());
+                sendUnkownCommandError(p, primaryArg);
                 break;
             case MADD:
             case MTRANS:
@@ -90,7 +92,7 @@ public class BaseCommand implements CommandExecutor {
         StringJoiner stringJoiner = new StringJoiner("\n");
 
         for (PrimaryActionArgument arg : PrimaryActionArgument.values()) {
-            Messages.CommandText cmdText = Messages.getCommandText(arg);
+            MessagesLib.CommandText cmdText = MessagesLib.getCommandText(arg);
             if (cmdText != null) {
                 stringJoiner.add(cmdText.getDescription()).add(cmdText.getPattern());
             }

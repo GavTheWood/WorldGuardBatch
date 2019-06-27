@@ -1,5 +1,9 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownFlagError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendWrongFlagValueError;
+
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldguard.WorldGuard;
@@ -9,13 +13,11 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.eldoria.worldguardbatch.Messages;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-import java.util.Optional;
 import java.util.StringJoiner;
 
 public class FlagManager implements Subcommand {
@@ -35,14 +37,15 @@ public class FlagManager implements Subcommand {
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 4) {
-            sender.sendMessage(Messages.getErrorTooFewArguments(pArg));
+            sendTooFewArgumentError(sender, pArg);
             return;
         }
 
         var flag = Flags.fuzzyMatchFlag(flagRegistry, args[3]);
 
         if (flag == null) {
-            sender.sendMessage(Messages.ERROR_UNKNOWN_FLAG);
+            sendUnkownFlagError(sender);
+            return;
         }
 
         PrimaryActionArgument paa = PrimaryActionArgument.getPrimary(args[0]);
@@ -68,16 +71,9 @@ public class FlagManager implements Subcommand {
             try {
                 setFlag(region, flag, actor, inputValue);
             } catch (InvalidFlagFormat e) {
-                sender.sendMessage(Messages.ERROR_WRONG_FLAG_VALUE);
+                sendWrongFlagValueError(sender);
             }
         });
-
-        return;
-    }
-
-    private Optional<Flag<?>> getFlag(String flagName) {
-        return flagRegistry.getAll().stream().filter(flag ->
-                flag.getName().equalsIgnoreCase(flagName)).findFirst();
     }
 
     private static <V> void setFlag(ProtectedRegion region, Flag<V> flag, Actor sender, String value)

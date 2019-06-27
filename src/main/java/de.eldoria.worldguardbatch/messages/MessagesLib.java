@@ -1,41 +1,41 @@
-package de.eldoria.worldguardbatch;
+package de.eldoria.worldguardbatch.messages;
 
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
-import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
-public final class Messages {
+public final class MessagesLib {
     /**
      * number is negative or not a number.
      */
-    public static final String ERROR_INVALID_NUMBERS = "Invalid Numbers. Numbers must be positive. "
+    static final String ERROR_INVALID_NUMBERS = "Invalid Numbers. Numbers must be positive. "
             + "Min must be smaller than max";
 
     /**
      * World could not be found.
      */
-    public static final String ERROR_WORLD_NOT_FOUND = "Couldn't find the world. Please Report this Error.";
+    static final String ERROR_WORLD_NOT_FOUND = "Couldn't find the world. Please Report this Error.";
 
     /**
      * Player is not known. Never joined the server
      */
-    public static final String ERROR_UNKNOWN_PLAYER = "This player was never on this server.";
+    static final String ERROR_UNKNOWN_PLAYER = "This player was never on this server.";
     /**
      * unknown flag type.
      */
-    public static final String ERROR_UNKNOWN_FLAG = "Unknown Flag. Please check available world guard flags.";
+    static final String ERROR_UNKNOWN_FLAG = "Unknown Flag. Please check available world guard flags.";
 
     /**
      * Wrong value for flag.
      */
-    public static final String ERROR_WRONG_FLAG_VALUE = "This value is not allowed for this flag. Please check value.";
+    static final String ERROR_WRONG_FLAG_VALUE = "This value is not allowed for this flag. Please check value.";
 
     /**
      * No region found in query.
      */
-    public static final String ERROR_NO_REGIONS_FOUND = "No regions found under this query.";
+    static final String ERROR_NO_REGIONS_FOUND = "No regions found under this query.";
 
+    static final String ERROR_UNKNOWN_COMMAND = "Unknown Command. Please use /wgb help for a list of commands.";
 
     private static final String ARGUMENTS = "\nQueries:";
     private static final String REGEX_LOOKUP_SYNTAX = "\nRegex Lookup: regex [regex pattern]";
@@ -47,7 +47,6 @@ public final class Messages {
 
     private static final String ERROR_TOO_FEW_ARGUMENTS = "Too few arguments. Please check pattern:\n";
     private static final String ERROR_TOO_MANY_ARGUMENTS = "Too many arguments. Please check command pattern:\n";
-    private static final String ERROR_UNKNOWN_COMMAND = "Unknown Command. Please use /wgb help for a list of commands.";
     private static final String ERROR_UNKNOWN_REGION_QUERY = "The query does not exists or is not"
             + " allowed for this command.\n"
             + "Take a look at the allowed queries:\n";
@@ -140,7 +139,7 @@ public final class Messages {
      * @param regionId id of the region
      * @return Error a string
      */
-    public static String getRegionNotFound(String regionId) {
+    static String getRegionNotFound(String regionId) {
         return "Region '" + regionId + "' not found.";
     }
 
@@ -150,7 +149,7 @@ public final class Messages {
      * @param primaryActionArgument command identifier
      * @return Error a string
      */
-    public static String getErrorTooFewArguments(PrimaryActionArgument primaryActionArgument) {
+    static String getErrorTooFewArguments(PrimaryActionArgument primaryActionArgument) {
         return ERROR_TOO_FEW_ARGUMENTS + getCommandTextSave(primaryActionArgument).getPattern();
     }
 
@@ -160,17 +159,8 @@ public final class Messages {
      * @param primaryActionArgument command identifier
      * @return Error a string
      */
-    public static String getErrorTooManyArguments(PrimaryActionArgument primaryActionArgument) {
+    static String getErrorTooManyArguments(PrimaryActionArgument primaryActionArgument) {
         return ERROR_TOO_MANY_ARGUMENTS + getCommandTextSave(primaryActionArgument).getPattern();
-    }
-
-    /**
-     * Get the error for the command.
-     *
-     * @return Error a string
-     */
-    public static String getErrorUnknownCommand() {
-        return ERROR_UNKNOWN_COMMAND;
     }
 
     /**
@@ -179,7 +169,7 @@ public final class Messages {
      * @param primaryActionArgument command identifier
      * @return Error a string
      */
-    public static String getErrorUnknownRegionQuery(PrimaryActionArgument primaryActionArgument) {
+    static String getErrorUnknownRegionQuery(PrimaryActionArgument primaryActionArgument) {
         return ERROR_UNKNOWN_REGION_QUERY + getCommandTextSave(primaryActionArgument).getPattern();
     }
 
@@ -189,7 +179,7 @@ public final class Messages {
      * @param primaryActionArgument command identifier
      * @return Error a string
      */
-    public static String getErrorUnknownMembershipScope(PrimaryActionArgument primaryActionArgument) {
+    static String getErrorUnknownMembershipScope(PrimaryActionArgument primaryActionArgument) {
         return ERROR_UNKNOWN_MEMBERSHIP_SCOPE + getCommandTextSave(primaryActionArgument).getPattern();
     }
 
@@ -199,7 +189,7 @@ public final class Messages {
      * @param primaryActionArgument command identifier
      * @return Error a string
      */
-    public static String getErrorUnknownCheckArgument(PrimaryActionArgument primaryActionArgument) {
+    static String getErrorUnknownCheckArgument(PrimaryActionArgument primaryActionArgument) {
         return ERROR_UNKNOWN_CHECK_ARGUMENT + getCommandTextSave(primaryActionArgument).getPattern();
     }
 
@@ -240,40 +230,6 @@ public final class Messages {
         return null;
     }
 
-
-    /**
-     * Sends a too few or too many arg message.
-     *
-     * @param p              player which should receive the message
-     * @param actionArgument action argument of command
-     * @param args           args array
-     * @param requiredArgs   required args.
-     */
-    public static void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
-                                           String[] args, int requiredArgs) {
-        sendArgumentMessage(p, actionArgument, args, requiredArgs, requiredArgs);
-    }
-
-    /**
-     * Sends a too few or too many arg message.
-     *
-     * @param p              player which should receive the message
-     * @param actionArgument action argument of command
-     * @param args           args array
-     * @param min            min required argument count
-     * @param max            max required argument count
-     */
-    public static void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
-                                           String[] args, int min, int max) {
-        if (args.length < min) {
-            p.sendMessage(getErrorTooFewArguments(actionArgument));
-        } else if (args.length > max) {
-            p.sendMessage(getErrorTooManyArguments(actionArgument));
-        }
-
-    }
-
-
     public static class CommandText {
         private String description;
         private String pattern;
@@ -282,7 +238,7 @@ public final class Messages {
          * Creates new command text object.
          *
          * @param description description of the command
-         * @param pattern     pattenr of the command
+         * @param pattern     pattern of the command
          */
         CommandText(String description, String pattern) {
 
