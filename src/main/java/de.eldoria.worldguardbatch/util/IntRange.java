@@ -48,20 +48,11 @@ public class IntRange implements Iterable<Integer> {
         int max;
         int min = 0;
 
-        try {
-            max = Integer.parseInt(boundMin);
+        max = Integer.parseInt(boundMin);
 
-        } catch (NumberFormatException e) {
-            throw e;
-        }
         if (boundMax != null) {
             min = max;
-            try {
-                max = Integer.parseInt(boundMax);
-
-            } catch (NumberFormatException e) {
-                throw e;
-            }
+            max = Integer.parseInt(boundMax);
         }
         return new IntRange(min, max);
     }
