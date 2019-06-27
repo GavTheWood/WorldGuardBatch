@@ -7,6 +7,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import de.eldoria.worldguardbatch.messages.MessagesLib;
 import de.eldoria.worldguardbatch.util.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -16,7 +17,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -37,16 +37,6 @@ public class RegionLoader {
         regionContainer = worldGuard.getPlatform().getRegionContainer();
     }
 
-    private Map<String, ProtectedRegion> getRegionsFromWorld(World world) {
-        var worldContainer = regionContainer.get(world);
-        if (worldContainer == null) {
-            return new HashMap<>();
-
-        }
-
-        return worldContainer.getRegions();
-    }
-
     /**
      * Finds all regions where a specific Player is member or owner in a world.
      *
@@ -61,7 +51,7 @@ public class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            sender.sendMessage(Messages.ERROR_UNKNOWN_PLAYER);
+            sender.sendMessage(MessagesLib.ERROR_UNKNOWN_PLAYER);
             return Collections.emptyList();
         }
 
@@ -76,24 +66,16 @@ public class RegionLoader {
      * @return List of regions, where the player is a member or owner.
      */
     public List<ProtectedRegion> getOwnerRegionsFromPlayerInWorld(Player sender, String playerName) {
-        List<ProtectedRegion> result = new ArrayList<>();
-
         var regions = getRegionsFromWorld(BukkitAdapter.adapt(sender.getWorld()));
 
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            sender.sendMessage(Messages.ERROR_UNKNOWN_PLAYER);
+            sender.sendMessage(MessagesLib.ERROR_UNKNOWN_PLAYER);
             return Collections.emptyList();
         }
 
-        for (ProtectedRegion region : regions.values()) {
-            if (region.isOwner(p)) {
-                result.add(region);
-            }
-        }
-        return result;
-
+        return filterRegion(regions.values(), region -> region.isOwner(p));
     }
 
     /**
@@ -104,24 +86,16 @@ public class RegionLoader {
      * @return List of regions, where the player is a member or owner.
      */
     public List<ProtectedRegion> getMemberRegionsFromPlayerInWorld(Player sender, String playerName) {
-        List<ProtectedRegion> result = new ArrayList<>();
-
         var regions = getRegionsFromWorld(BukkitAdapter.adapt(sender.getWorld()));
 
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            sender.sendMessage(Messages.ERROR_UNKNOWN_PLAYER);
+            sender.sendMessage(MessagesLib.ERROR_UNKNOWN_PLAYER);
             return Collections.emptyList();
         }
 
-        for (ProtectedRegion region : regions.values()) {
-            if (region.isMemberOnly(p)) {
-                result.add(region);
-            }
-        }
-        return result;
-
+        return filterRegion(regions.values(), region -> region.isMemberOnly(p));
     }
 
     /**
@@ -146,13 +120,6 @@ public class RegionLoader {
         return result;
     }
 
-    private List<ProtectedRegion> filterRegion(Collection<ProtectedRegion> regions, Predicate<ProtectedRegion> filter) {
-        return regions.stream()
-                .filter(filter).collect(Collectors.toList());
-
-    }
-
-
     /**
      * Find the regions, where the names match a count up pattern. The counter is inserted at a '*'
      *
@@ -172,7 +139,7 @@ public class RegionLoader {
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
         if (worldContainer == null) {
-            sender.sendMessage(Messages.ERROR_WORLD_NOT_FOUND);
+            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
             return Collections.emptyList();
         }
 
@@ -199,22 +166,15 @@ public class RegionLoader {
      * @return list of children of the parent.
      */
     public List<ProtectedRegion> getAllChildsOfRegionInWorld(Player sender, String name) {
-        List<ProtectedRegion> result = new ArrayList<>();
-
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
         if (worldContainer == null) {
-            sender.sendMessage(Messages.ERROR_WORLD_NOT_FOUND);
+            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
             return Collections.emptyList();
         }
 
         var regions = worldContainer.getRegions();
 
-        for (ProtectedRegion region : regions.values()) {
-            if (region.getParent().getId().equalsIgnoreCase(name)) {
-                result.add(region);
-            }
-        }
-        return result;
+        return filterRegion(regions.values(), region -> region.getId().equalsIgnoreCase(name));
     }
 
     /**
@@ -229,7 +189,7 @@ public class RegionLoader {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
 
         if (worldContainer == null) {
-            sender.sendMessage(Messages.ERROR_WORLD_NOT_FOUND);
+            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
             return result;
         }
 
@@ -241,6 +201,40 @@ public class RegionLoader {
     }
 
     /**
+     * Get one region in a world.
+     *
+     * @param sender sender of the command
+     * @param name   name of the region
+     * @return Region or null if the region does not exists
+     */
+    public ProtectedRegion getRegionInWorld(Player sender, String name) {
+        var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
+
+        if (worldContainer == null) {
+            sender.sendMessage(MessagesLib.ERROR_WORLD_NOT_FOUND);
+            return null;
+        }
+
+        return worldContainer.getRegion(name);
+    }
+
+    private Map<String, ProtectedRegion> getRegionsFromWorld(World world) {
+        var worldContainer = regionContainer.get(world);
+        if (worldContainer == null) {
+            return Collections.emptyMap();
+
+        }
+
+        return worldContainer.getRegions();
+    }
+
+    private List<ProtectedRegion> filterRegion(Collection<ProtectedRegion> regions, Predicate<ProtectedRegion> filter) {
+        return regions.stream()
+                .filter(filter).collect(Collectors.toList());
+
+    }
+
+    /**
      * Get a local player object from a string.
      *
      * @param name name to lookup
@@ -248,7 +242,7 @@ public class RegionLoader {
      */
     @Nullable
     public static LocalPlayer getLocalPlayerFromName(String name) {
-        if (name == null || name.equalsIgnoreCase("")) {
+        if (name == null || name.isEmpty()) {
 
             return null;
         }
@@ -262,28 +256,9 @@ public class RegionLoader {
                     player = p.getPlayer();
                 }
             }
-            return null;
         }
 
         return WorldGuardPlugin.inst().wrapPlayer(player);
     }
 
-
-    /**
-     * Get one region in a world.
-     *
-     * @param sender sender of the command
-     * @param name   name of the region
-     * @return Region or null if the region does not exists
-     */
-    public ProtectedRegion getRegionInWorld(Player sender, String name) {
-        var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
-
-        if (worldContainer == null) {
-            sender.sendMessage(Messages.ERROR_WORLD_NOT_FOUND);
-            return null;
-        }
-
-        return worldContainer.getRegion(name);
-    }
 }
