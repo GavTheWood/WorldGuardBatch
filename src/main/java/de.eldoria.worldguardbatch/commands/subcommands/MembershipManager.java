@@ -14,7 +14,13 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.*;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownPlayerError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownMembershipScopeError;
 
 public class MembershipManager implements Subcommand {
     private RegionLoader regionLoader;
@@ -297,7 +303,8 @@ public class MembershipManager implements Subcommand {
 
     }
 
-    private void removeByScope(Player p, MembershipScopeArgument scope, List<ProtectedRegion> regions, LocalPlayer player) {
+    private void removeByScope(Player p, MembershipScopeArgument scope,
+                               List<ProtectedRegion> regions, LocalPlayer player) {
 
         for (var region : regions) {
 
@@ -331,7 +338,8 @@ public class MembershipManager implements Subcommand {
         addByScope(sender, scope, regions, localPlayer);
     }
 
-    private void addByScope(Player p, MembershipScopeArgument scope, List<ProtectedRegion> regions, LocalPlayer player) {
+    private void addByScope(Player p, MembershipScopeArgument scope,
+                            List<ProtectedRegion> regions, LocalPlayer player) {
 
         for (var region : regions) {
             switch (scope) {

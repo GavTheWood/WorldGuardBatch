@@ -35,6 +35,9 @@ public final class MessagesLib {
      */
     static final String ERROR_NO_REGIONS_FOUND = "No regions found under this query.";
 
+    /**
+     * No command found.
+     */
     static final String ERROR_UNKNOWN_COMMAND = "Unknown Command. Please use /wgb help for a list of commands.";
 
     private static final String ARGUMENTS = "\nQueries:";

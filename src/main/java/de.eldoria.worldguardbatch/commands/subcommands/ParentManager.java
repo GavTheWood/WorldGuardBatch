@@ -1,12 +1,19 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.*;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendNoRegionsFoundError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendRegionNotFoundError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooManyArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.eldoria.worldguardbatch.messages.MessagesLib;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
@@ -62,7 +69,7 @@ public class ParentManager implements Subcommand {
                 if (args.length == 3) {
                     changeParent(sender, args);
                 } else {
-                    sendArgumentMessage(sender, pArg, args, 3);
+                    MessageSender.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             default:
@@ -160,7 +167,7 @@ public class ParentManager implements Subcommand {
 
     private void setParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            sendArgumentMessage(sender, pArg, args, 2);
+            MessageSender.sendArgumentMessage(sender, pArg, args, 2);
             return;
         }
         var parent = regionLoader.getRegionInWorld(sender, args[1]);

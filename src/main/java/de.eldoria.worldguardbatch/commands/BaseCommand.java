@@ -54,7 +54,7 @@ public class BaseCommand implements CommandExecutor {
 
         switch (primaryArg) {
             case NONE:
-                sendUnkownCommandError(p, primaryArg);
+                sendUnkownCommandError(p);
                 break;
             case MADD:
             case MTRANS:

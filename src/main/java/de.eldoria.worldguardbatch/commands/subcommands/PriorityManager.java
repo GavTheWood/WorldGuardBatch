@@ -12,7 +12,11 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.*;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
 
 public class PriorityManager implements Subcommand {
     private RegionLoader regionLoader;

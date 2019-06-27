@@ -1,6 +1,7 @@
 package de.eldoria.worldguardbatch;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.*;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownPlayerError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendWorldNotFoundError;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
@@ -9,7 +10,6 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import de.eldoria.worldguardbatch.messages.MessagesLib;
 import de.eldoria.worldguardbatch.util.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

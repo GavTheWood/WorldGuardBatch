@@ -16,7 +16,11 @@ import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.*;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownFlagError;
+import static de.eldoria.worldguardbatch.messages.MessageSender.sendWrongFlagValueError;
 
 public class FlagManager implements Subcommand {
     private RegionLoader regionLoader;
