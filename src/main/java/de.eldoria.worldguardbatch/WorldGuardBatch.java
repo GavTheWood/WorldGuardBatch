@@ -29,9 +29,5 @@ public class WorldGuardBatch extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
-
     }
-
-
 }

@@ -45,7 +45,7 @@ public class BaseCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            //TODO: Info command
+            p.sendMessage("Type '/wgb help' for a list of commands.");
             return true;
         }
         var primaryArg = PrimaryActionArgument.getPrimary(args[0]);

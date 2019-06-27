@@ -50,7 +50,7 @@ public class RegionLoader {
     /**
      * Finds all regions where a specific Player is member or owner in a world.
      *
-     * @param sender      sender of the command.
+     * @param sender     sender of the command.
      * @param playerName Name of the player from whom the regions should found.
      * @return List of regions, where the player is a member or owner.
      */
@@ -71,7 +71,7 @@ public class RegionLoader {
     /**
      * Finds all regions where a specific Player is owner in a world.
      *
-     * @param sender      sender of command.
+     * @param sender     sender of command.
      * @param playerName Name of the player from whom the regions should found.
      * @return List of regions, where the player is a member or owner.
      */
@@ -82,7 +82,7 @@ public class RegionLoader {
 
         var p = getLocalPlayerFromName(playerName);
 
-        if(p == null){
+        if (p == null) {
             sender.sendMessage(Messages.ERROR_UNKNOWN_PLAYER);
             return Collections.emptyList();
         }
@@ -99,7 +99,7 @@ public class RegionLoader {
     /**
      * Finds all regions where a specific Player is member or owner in a world.
      *
-     * @param sender      sender of the command
+     * @param sender     sender of the command
      * @param playerName Name of the player from whom the regions should found.
      * @return List of regions, where the player is a member or owner.
      */
@@ -110,7 +110,7 @@ public class RegionLoader {
 
         var p = getLocalPlayerFromName(playerName);
 
-        if(p == null){
+        if (p == null) {
             sender.sendMessage(Messages.ERROR_UNKNOWN_PLAYER);
             return Collections.emptyList();
         }

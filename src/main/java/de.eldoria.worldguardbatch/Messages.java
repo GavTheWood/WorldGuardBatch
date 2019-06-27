@@ -235,6 +235,7 @@ public final class Messages {
                 return CHECK;
             case LIST:
                 return LIST;
+            default:
         }
         return null;
     }
