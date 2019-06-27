@@ -149,7 +149,7 @@ Counts all region in world.
 `/wgb check all`
 
 Counts all regions, which have the region as parent.  
-`/wgb check childs [regionid]`
+`/wgb check children [regionid]`
 
 Counts all regions with matching name.  
 `/wgb check regex [regex pattern]`
@@ -165,16 +165,16 @@ Command to check how many region will be affected by a query.
 Names of affected Regions will be written in the chat.
 
 Lists all region in world.  
-`/wgb check all`
+`/wgb list all`
 
 Lists all regions, which have the region as parent.  
-`/wgb check childs [regionid]`
+`/wgb list children [regionid]`
 
 Lists all regions with matching name.  
-`/wgb check regex [regex pattern]`
+`/wgb list regex [regex pattern]`
 
 Lists all regions with matching name.  
-`/wgb check count [name] [count1] <count2>`
+`/wgb list count [name] [count1] <count2>`
 
 Lists all regions with matching name.  
-`/wgb check owner [name]`
+`/wgb list owner [name]`
