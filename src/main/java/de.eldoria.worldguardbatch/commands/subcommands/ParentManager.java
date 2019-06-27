@@ -149,6 +149,8 @@ public class ParentManager implements Subcommand {
                     }
                 }
             });
+            sendTotalModifiedMessage(sender, regions.size());
+
             return;
         }
         regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[1]);
@@ -187,8 +189,8 @@ public class ParentManager implements Subcommand {
         setParents(sender, regions, parent);
     }
 
-    private void setParents(Player p, Collection<ProtectedRegion> collection, ProtectedRegion parent) {
-        collection.forEach(region -> {
+    private void setParents(Player p, Collection<ProtectedRegion> regions, ProtectedRegion parent) {
+        regions.forEach(region -> {
             try {
                 region.setParent(parent);
                 sendModifiedMessage(p, region.getId());
@@ -196,6 +198,8 @@ public class ParentManager implements Subcommand {
                 //This will never happen... EVER!
             }
         });
+        sendTotalModifiedMessage(p, regions.size());
+
     }
 
     private List<ProtectedRegion> getCountUpRegions(Player sender, org.bukkit.World world,

@@ -88,6 +88,8 @@ public class PriorityManager implements Subcommand {
             region.setPriority(prio);
             sendModifiedMessage(sender, region.getId());
         });
+        sendTotalModifiedMessage(sender, regions.size());
+
     }
 
     private void changePriorityByCount(Player sender, String[] args, int prio) {
@@ -117,6 +119,8 @@ public class PriorityManager implements Subcommand {
             region.setPriority(prio);
             sendModifiedMessage(sender, region.getId());
         });
+        sendTotalModifiedMessage(sender, regions.size());
+
     }
 
     private void changePriority(Player sender, int prio) {
@@ -126,6 +130,8 @@ public class PriorityManager implements Subcommand {
             region.setPriority(prio);
             sendModifiedMessage(sender, region.getId());
         });
+        sendTotalModifiedMessage(sender, regions.size());
+
     }
 
     private void changePriorityByRegex(Player sender, String[] args, int prio) {
@@ -135,5 +141,7 @@ public class PriorityManager implements Subcommand {
             region.setPriority(prio);
             sendModifiedMessage(sender, region.getId());
         });
+        sendTotalModifiedMessage(sender, regions.size());
+
     }
 }
