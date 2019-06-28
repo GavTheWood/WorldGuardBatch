@@ -1,4 +1,4 @@
-package de.eldoria.worldguardbatch.commands.subcommands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import org.bukkit.entity.Player;

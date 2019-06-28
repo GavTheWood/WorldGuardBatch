@@ -1,4 +1,4 @@
-package de.eldoria.worldguardbatch.commands.subcommands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ParentManager implements Subcommand {
+class ParentManager implements Subcommand {
     private RegionLoader regionLoader;
     private MessageSender ms;
 

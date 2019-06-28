@@ -1,4 +1,4 @@
-package de.eldoria.worldguardbatch.commands.subcommands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extension.platform.Actor;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
 
-public class FlagManager implements Subcommand {
+class FlagManager implements Subcommand {
     private RegionLoader regionLoader;
     private FlagRegistry flagRegistry;
     private MessageSender ms;

@@ -1,12 +1,8 @@
-package de.eldoria.worldguardbatch.commands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.WorldGuardBatch;
-import de.eldoria.worldguardbatch.commands.subcommands.CheckSubcommand;
-import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
-import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
-import de.eldoria.worldguardbatch.commands.subcommands.ParentManager;
-import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
+import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.messages.MessagesLib;
 import org.bukkit.command.Command;

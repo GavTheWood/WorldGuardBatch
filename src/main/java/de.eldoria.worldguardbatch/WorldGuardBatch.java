@@ -1,12 +1,9 @@
 package de.eldoria.worldguardbatch;
 
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import de.eldoria.worldguardbatch.commands.BaseCommand;
+import de.eldoria.worldguardbatch.commands.basecommand.BaseCommand;
 import de.eldoria.worldguardbatch.messages.MessageSender;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldGuardBatch extends JavaPlugin {
