@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-public class RegionLoader {
+public final class RegionLoader {
 
     private WorldGuard worldGuard;
     private RegionContainer regionContainer;
