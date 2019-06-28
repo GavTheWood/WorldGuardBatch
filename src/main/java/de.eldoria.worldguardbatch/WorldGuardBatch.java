@@ -18,12 +18,6 @@ public class WorldGuardBatch extends JavaPlugin {
 
     private static WorldGuardBatch instance;
 
-    private RegionContainer wg;
-
-    private RegionLoader regionLoader;
-
-    private PluginManager pm;
-
     private boolean loaded;
 
     /**
@@ -44,9 +38,7 @@ public class WorldGuardBatch extends JavaPlugin {
         if (!loaded) {
             instance = this;
             saveDefaultConfig();
-            pm = Bukkit.getPluginManager();
-            wg = WorldGuard.getInstance().getPlatform().getRegionContainer();
-            regionLoader = new RegionLoader();
+            RegionLoader regionLoader = new RegionLoader();
             this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
             Bukkit.getLogger().info("World Guard Batch started");
             loaded = true;
