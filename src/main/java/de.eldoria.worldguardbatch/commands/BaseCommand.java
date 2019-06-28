@@ -1,6 +1,7 @@
 package de.eldoria.worldguardbatch.commands;
 
 import de.eldoria.worldguardbatch.RegionLoader;
+import de.eldoria.worldguardbatch.WorldGuardBatch;
 import de.eldoria.worldguardbatch.commands.subcommands.CheckSubcommand;
 import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
 import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
@@ -81,6 +82,9 @@ public class BaseCommand implements CommandExecutor {
                 break;
             case HELP:
                 executeHelpCommand(p);
+                break;
+            case RELOAD:
+                WorldGuardBatch.getInstance().reload();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + primaryArg);

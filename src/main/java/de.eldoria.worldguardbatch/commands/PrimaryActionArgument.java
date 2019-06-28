@@ -68,7 +68,12 @@ public enum PrimaryActionArgument {
     /**
      * Call help command.
      */
-    HELP;
+    HELP,
+
+    /**
+     *
+     */
+    RELOAD;
 
     /**
      * Returns the string as enum.

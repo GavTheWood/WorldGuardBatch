@@ -13,6 +13,8 @@ public class WorldGuardBatch extends JavaPlugin {
 
     public static FileConfiguration config;
 
+    private static WorldGuardBatch instance;
+
     private RegionContainer wg;
 
     private RegionLoader regionLoader;
@@ -21,6 +23,10 @@ public class WorldGuardBatch extends JavaPlugin {
 
     private boolean loaded;
 
+    public static WorldGuardBatch getInstance(){
+        return instance;
+    }
+
     @Override
     public void onEnable() {
         if (loaded) {
@@ -28,6 +34,7 @@ public class WorldGuardBatch extends JavaPlugin {
         }
 
         if (!loaded) {
+            instance = this;
             saveDefaultConfig();
             pm = Bukkit.getPluginManager();
             wg = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -38,7 +45,7 @@ public class WorldGuardBatch extends JavaPlugin {
         }
     }
 
-    private void reload() {
+    public void reload() {
         config = getConfig();
         MessageSender.getInstance().reload();
         Bukkit.getLogger().info("World Guard Batch reloaded");
