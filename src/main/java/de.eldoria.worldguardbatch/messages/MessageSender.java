@@ -19,6 +19,26 @@ import static de.eldoria.worldguardbatch.messages.MessagesLib.getRegionNotFound;
 
 public class MessageSender {
 
+    private String notifyColor = "§d";
+    private String errorColor = "§c";
+
+    private static MessageSender instance;
+
+    private MessageSender(){
+
+    }
+
+    public static MessageSender getInstance(){
+        if(instance == null){
+            instance = new MessageSender();
+        }
+        return instance;
+    }
+
+    public void reload(){
+
+    }
+
     /**
      * Sends a too few or too many arg message.
      *
@@ -27,7 +47,7 @@ public class MessageSender {
      * @param args           args array
      * @param requiredArgs   required args.
      */
-    public static void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
+    public void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
                                            String[] args, int requiredArgs) {
         sendArgumentMessage(p, actionArgument, args, requiredArgs, requiredArgs);
     }
@@ -41,12 +61,13 @@ public class MessageSender {
      * @param min            min required argument count
      * @param max            max required argument count
      */
-    public static void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
+    public void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
                                            String[] args, int min, int max) {
         if (args.length < min) {
+            sendTooFewArgumentsError(p, actionArgument);
             p.sendMessage(getErrorTooFewArguments(actionArgument));
         } else if (args.length > max) {
-            p.sendMessage(getErrorTooManyArguments(actionArgument));
+            sendTooManyArgumentsError(p,actionArgument);
         }
     }
 
@@ -55,7 +76,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendInvalidNumberError(Player p) {
+    public void sendInvalidNumberError(Player p) {
         sendError(p, ERROR_INVALID_NUMBERS);
     }
 
@@ -64,7 +85,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendWorldNotFoundError(Player p) {
+    public void sendWorldNotFoundError(Player p) {
         sendError(p, ERROR_WORLD_NOT_FOUND);
     }
 
@@ -73,7 +94,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendUnknownPlayerError(Player p) {
+    public void sendUnknownPlayerError(Player p) {
         sendError(p, ERROR_UNKNOWN_PLAYER);
     }
 
@@ -82,7 +103,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendUnkownFlagError(Player p) {
+    public void sendUnkownFlagError(Player p) {
         sendError(p, ERROR_UNKNOWN_FLAG);
     }
 
@@ -91,7 +112,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendWrongFlagValueError(Player p) {
+    public void sendWrongFlagValueError(Player p) {
         sendError(p, ERROR_WRONG_FLAG_VALUE);
     }
 
@@ -100,7 +121,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendNoRegionsFoundError(Player p) {
+    public void sendNoRegionsFoundError(Player p) {
         sendError(p, ERROR_NO_REGIONS_FOUND);
     }
 
@@ -110,7 +131,7 @@ public class MessageSender {
      * @param p        target of the message
      * @param regionId region which cant be found
      */
-    public static void sendRegionNotFoundError(Player p, String regionId) {
+    public void sendRegionNotFoundError(Player p, String regionId) {
         sendError(p, getRegionNotFound(regionId));
     }
 
@@ -120,7 +141,7 @@ public class MessageSender {
      * @param p    target of the message
      * @param pArg command indicator
      */
-    public static void sendTooManyArgumentError(Player p, PrimaryActionArgument pArg) {
+    public void sendTooManyArgumentsError(Player p, PrimaryActionArgument pArg) {
         sendError(p, getErrorTooManyArguments(pArg));
     }
 
@@ -130,7 +151,7 @@ public class MessageSender {
      * @param p    target of the message
      * @param pArg command indicator
      */
-    public static void sendTooFewArgumentError(Player p, PrimaryActionArgument pArg) {
+    public void sendTooFewArgumentsError(Player p, PrimaryActionArgument pArg) {
         sendError(p, getErrorTooFewArguments(pArg));
     }
 
@@ -139,7 +160,7 @@ public class MessageSender {
      *
      * @param p target of the message
      */
-    public static void sendUnkownCommandError(Player p) {
+    public void sendUnkownCommandError(Player p) {
         sendError(p, ERROR_UNKNOWN_COMMAND);
     }
 
@@ -149,7 +170,7 @@ public class MessageSender {
      * @param p    target of the message
      * @param pArg command indicator
      */
-    public static void sendUnknownRegionQueryError(Player p, PrimaryActionArgument pArg) {
+    public void sendUnknownRegionQueryError(Player p, PrimaryActionArgument pArg) {
         sendError(p, getErrorUnknownRegionQuery(pArg));
     }
 
@@ -159,7 +180,7 @@ public class MessageSender {
      * @param p    target of the message
      * @param pArg command indicator
      */
-    public static void sendUnkownMembershipScopeError(Player p, PrimaryActionArgument pArg) {
+    public void sendUnkownMembershipScopeError(Player p, PrimaryActionArgument pArg) {
         sendError(p, getErrorUnknownMembershipScope(pArg));
     }
 
@@ -169,12 +190,12 @@ public class MessageSender {
      * @param p    target of the message
      * @param pArg command indicator
      */
-    public static void sendUnkownCheckArgumentError(Player p, PrimaryActionArgument pArg) {
+    public void sendUnkownCheckArgumentError(Player p, PrimaryActionArgument pArg) {
         sendError(p, getErrorUnknownCheckArgument(pArg));
     }
 
-    private static void sendError(Player p, String message) {
-        p.sendMessage(message);
+    private void sendError(Player p, String message) {
+        p.sendMessage(errorColor + message);
     }
 
     /**
@@ -183,8 +204,8 @@ public class MessageSender {
      * @param p      target of the message
      * @param region name of the modified region
      */
-    public static void sendModifiedMessage(Player p, String region) {
-        p.sendMessage("Region " + region + " modified.");
+    public void sendModifiedMessage(Player p, String region) {
+        sendNotify(p, "Region " + region + " modified.");
     }
 
     /**
@@ -193,8 +214,11 @@ public class MessageSender {
      * @param p     target of the message
      * @param count count of regions
      */
-    public static void sendTotalModifiedMessage(Player p, int count) {
-        p.sendMessage("Modified " + count + " regions!");
+    public void sendTotalModifiedMessage(Player p, int count) {
+        sendNotify(p, "Modified " + count + " regions!");
     }
 
+    private void sendNotify(Player p, String message) {
+        p.sendMessage(notifyColor + message);
+    }
 }
