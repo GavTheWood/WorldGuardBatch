@@ -11,6 +11,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldGuardBatch extends JavaPlugin {
 
+    /**
+     * File Config.
+     */
     public static FileConfiguration config;
 
     private static WorldGuardBatch instance;
@@ -23,7 +26,12 @@ public class WorldGuardBatch extends JavaPlugin {
 
     private boolean loaded;
 
-    public static WorldGuardBatch getInstance(){
+    /**
+     * Get the Plugin instance.
+     *
+     * @return Plugin instance
+     */
+    public static WorldGuardBatch getInstance() {
         return instance;
     }
 
@@ -45,6 +53,9 @@ public class WorldGuardBatch extends JavaPlugin {
         }
     }
 
+    /**
+     * Reloads the plugin.
+     */
     public void reload() {
         config = getConfig();
         MessageSender.getInstance().reload();

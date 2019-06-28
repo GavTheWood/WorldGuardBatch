@@ -52,6 +52,7 @@ public class BaseCommand implements CommandExecutor {
             p.sendMessage("Type '/wgb help' for a list of commands.");
             return true;
         }
+        
         var primaryArg = PrimaryActionArgument.getPrimary(args[0]);
 
         switch (primaryArg) {

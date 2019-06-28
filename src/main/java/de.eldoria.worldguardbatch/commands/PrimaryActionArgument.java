@@ -71,7 +71,7 @@ public enum PrimaryActionArgument {
     HELP,
 
     /**
-     *
+     * Call reload command.
      */
     RELOAD;
 

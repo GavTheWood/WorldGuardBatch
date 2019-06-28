@@ -18,25 +18,34 @@ import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorUnknownMem
 import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorUnknownRegionQuery;
 import static de.eldoria.worldguardbatch.messages.MessagesLib.getRegionNotFound;
 
-public class MessageSender {
+public final class MessageSender {
+
+    private static MessageSender instance;
 
     private String notifyColor = "§d";
     private String errorColor = "§c";
 
-    private static MessageSender instance;
 
-    private MessageSender(){
+    private MessageSender() {
         reload();
     }
 
-    public static MessageSender getInstance(){
-        if(instance == null){
+    /**
+     * Get the message sender instance.
+     *
+     * @return Message sender instance
+     */
+    public static MessageSender getInstance() {
+        if (instance == null) {
             instance = new MessageSender();
         }
         return instance;
     }
 
-    public void reload(){
+    /**
+     * Reload module.
+     */
+    public void reload() {
         notifyColor = Loader.getNotifyColor();
         errorColor = Loader.getErrorColor();
     }
@@ -50,7 +59,7 @@ public class MessageSender {
      * @param requiredArgs   required args.
      */
     public void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
-                                           String[] args, int requiredArgs) {
+                                    String[] args, int requiredArgs) {
         sendArgumentMessage(p, actionArgument, args, requiredArgs, requiredArgs);
     }
 
@@ -64,12 +73,12 @@ public class MessageSender {
      * @param max            max required argument count
      */
     public void sendArgumentMessage(Player p, PrimaryActionArgument actionArgument,
-                                           String[] args, int min, int max) {
+                                    String[] args, int min, int max) {
         if (args.length < min) {
             sendTooFewArgumentsError(p, actionArgument);
             p.sendMessage(getErrorTooFewArguments(actionArgument));
         } else if (args.length > max) {
-            sendTooManyArgumentsError(p,actionArgument);
+            sendTooManyArgumentsError(p, actionArgument);
         }
     }
 
