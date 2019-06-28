@@ -1,6 +1,7 @@
 package de.eldoria.worldguardbatch.messages;
 
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
+import de.eldoria.worldguardbatch.config.Loader;
 import org.bukkit.entity.Player;
 
 import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_INVALID_NUMBERS;
@@ -25,7 +26,7 @@ public class MessageSender {
     private static MessageSender instance;
 
     private MessageSender(){
-
+        reload();
     }
 
     public static MessageSender getInstance(){
@@ -36,7 +37,8 @@ public class MessageSender {
     }
 
     public void reload(){
-
+        notifyColor = Loader.getNotifyColor();
+        errorColor = Loader.getErrorColor();
     }
 
     /**
