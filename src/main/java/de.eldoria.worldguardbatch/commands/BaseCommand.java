@@ -1,13 +1,12 @@
 package de.eldoria.worldguardbatch.commands;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownCommandError;
-
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.subcommands.CheckSubcommand;
 import de.eldoria.worldguardbatch.commands.subcommands.FlagManager;
 import de.eldoria.worldguardbatch.commands.subcommands.MembershipManager;
 import de.eldoria.worldguardbatch.commands.subcommands.ParentManager;
 import de.eldoria.worldguardbatch.commands.subcommands.PriorityManager;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.messages.MessagesLib;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,6 +22,7 @@ public class BaseCommand implements CommandExecutor {
     private ParentManager parentManager;
     private FlagManager flagManager;
     private CheckSubcommand checkSubCommand;
+    private MessageSender ms;
 
     /**
      * Creates a new Base Command Object.
@@ -35,6 +35,7 @@ public class BaseCommand implements CommandExecutor {
         this.parentManager = new ParentManager(regionLoader);
         this.flagManager = new FlagManager(regionLoader);
         this.checkSubCommand = new CheckSubcommand(regionLoader);
+        this.ms = MessageSender.getInstance();
     }
 
     @Override
@@ -54,7 +55,7 @@ public class BaseCommand implements CommandExecutor {
 
         switch (primaryArg) {
             case NONE:
-                sendUnkownCommandError(p);
+                ms.sendUnkownCommandError(p);
                 break;
             case MADD:
             case MTRANS:

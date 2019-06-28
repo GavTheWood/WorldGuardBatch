@@ -1,14 +1,5 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendNoRegionsFoundError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendRegionNotFoundError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooManyArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
-
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
@@ -24,6 +15,7 @@ import java.util.List;
 
 public class ParentManager implements Subcommand {
     private RegionLoader regionLoader;
+    private MessageSender ms;
 
     /**
      * Creates new Parent Manager instance.
@@ -31,14 +23,14 @@ public class ParentManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public ParentManager(@NonNull RegionLoader regionLoader) {
-
+        this.ms = MessageSender.getInstance();
         this.regionLoader = regionLoader;
     }
 
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length == 1) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
@@ -50,7 +42,7 @@ public class ParentManager implements Subcommand {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[2]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE) {
-                sendUnknownRegionQueryError(sender, pArg);
+                ms.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -69,7 +61,7 @@ public class ParentManager implements Subcommand {
                 if (args.length == 3) {
                     changeParent(sender, args);
                 } else {
-                    MessageSender.sendArgumentMessage(sender, pArg, args, 3);
+                    ms.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             default:
@@ -83,7 +75,7 @@ public class ParentManager implements Subcommand {
         var parent = regionLoader.getRegionInWorld(sender, args[1]);
 
         if (parent == null) {
-            sendRegionNotFoundError(sender, args[1]);
+            ms.sendRegionNotFoundError(sender, args[1]);
             return;
         }
 
@@ -92,7 +84,7 @@ public class ParentManager implements Subcommand {
 
     private void removeParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 3) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
         RegionIdentificationArgument regionIdentificationArgument =
@@ -102,7 +94,7 @@ public class ParentManager implements Subcommand {
         if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
             regions = getCountUpRegions(sender, sender.getWorld(), args, 2);
             if (regions.isEmpty()) {
-                sendNoRegionsFoundError(sender);
+                ms.sendNoRegionsFoundError(sender);
             }
         } else if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
             if (args.length == 3) {
@@ -110,7 +102,7 @@ public class ParentManager implements Subcommand {
 
 
             } else {
-                sendTooManyArgumentError(sender, pArg);
+                ms.sendTooManyArgumentsError(sender, pArg);
                 return;
             }
 
@@ -120,7 +112,7 @@ public class ParentManager implements Subcommand {
 
     private void removeChildren(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
@@ -136,12 +128,12 @@ public class ParentManager implements Subcommand {
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
                 regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
                 if (regions.isEmpty()) {
-                    sendNoRegionsFoundError(sender);
+                    ms.sendNoRegionsFoundError(sender);
                     return;
                 }
 
             } else {
-                sendUnknownRegionQueryError(sender, pArg);
+                ms.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
 
@@ -150,13 +142,13 @@ public class ParentManager implements Subcommand {
                 if (parent != null && parent.getId().equalsIgnoreCase(args[1])) {
                     try {
                         region.setParent(null);
-                        sendModifiedMessage(sender, region.getId());
+                        ms.sendModifiedMessage(sender, region.getId());
                     } catch (ProtectedRegion.CircularInheritanceException e) {
                         //This will never happen... EVER!
                     }
                 }
             });
-            sendTotalModifiedMessage(sender, regions.size());
+            ms.sendTotalModifiedMessage(sender, regions.size());
 
             return;
         }
@@ -167,7 +159,7 @@ public class ParentManager implements Subcommand {
 
     private void setParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            MessageSender.sendArgumentMessage(sender, pArg, args, 2);
+            ms.sendArgumentMessage(sender, pArg, args, 2);
             return;
         }
         var parent = regionLoader.getRegionInWorld(sender, args[1]);
@@ -183,12 +175,12 @@ public class ParentManager implements Subcommand {
             if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
                 regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
                 if (regions.isEmpty()) {
-                    sendNoRegionsFoundError(sender);
+                    ms.sendNoRegionsFoundError(sender);
                 }
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
                 regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
             } else {
-                sendUnknownRegionQueryError(sender, pArg);
+                ms.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -200,12 +192,12 @@ public class ParentManager implements Subcommand {
         regions.forEach(region -> {
             try {
                 region.setParent(parent);
-                sendModifiedMessage(p, region.getId());
+                ms.sendModifiedMessage(p, region.getId());
             } catch (ProtectedRegion.CircularInheritanceException e) {
                 //This will never happen... EVER!
             }
         });
-        sendTotalModifiedMessage(p, regions.size());
+        ms.sendTotalModifiedMessage(p, regions.size());
 
     }
 
@@ -217,7 +209,7 @@ public class ParentManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[nameIndex + 1], null);
             } catch (NumberFormatException e) {
-                sendInvalidNumberError(sender);
+                ms.sendInvalidNumberError(sender);
                 return Collections.emptyList();
             }
 
@@ -227,7 +219,7 @@ public class ParentManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[nameIndex + 1], args[nameIndex + 2]);
             } catch (NumberFormatException e) {
-                sendInvalidNumberError(sender);
+                ms.sendInvalidNumberError(sender);
                 return Collections.emptyList();
             }
 

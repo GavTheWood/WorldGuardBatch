@@ -1,9 +1,5 @@
 package de.eldoria.worldguardbatch.commands.subcommands;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownCheckArgumentError;
-
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.CheckArgument;
@@ -19,6 +15,7 @@ import java.util.StringJoiner;
 public class CheckSubcommand implements Subcommand {
 
     private RegionLoader regionLoader;
+    private MessageSender ms;
 
     /**
      * Creates a new Check Subcommand instance.
@@ -26,6 +23,7 @@ public class CheckSubcommand implements Subcommand {
      * @param regionLoader region loader instance
      */
     public CheckSubcommand(RegionLoader regionLoader) {
+        this.ms = MessageSender.getInstance();
 
         this.regionLoader = regionLoader;
     }
@@ -34,20 +32,20 @@ public class CheckSubcommand implements Subcommand {
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
 
         if (args.length < 2) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
         CheckArgument checkArg = CheckArgument.getCheckScope(args[1]);
 
         if (checkArg == CheckArgument.NONE) {
-            sendUnkownCheckArgumentError(sender, pArg);
+            ms.sendUnkownCheckArgumentError(sender, pArg);
             return;
         }
 
         List<ProtectedRegion> regions = Collections.emptyList();
         if (checkArg != CheckArgument.ALL && args.length < 3) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
         switch (checkArg) {
@@ -59,14 +57,14 @@ public class CheckSubcommand implements Subcommand {
                 if (args.length == 3) {
                     regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[2]);
                 } else {
-                    MessageSender.sendArgumentMessage(sender, pArg, args, 3);
+                    ms.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             case REGEX:
                 if (args.length == 3) {
                     regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
                 } else {
-                    MessageSender.sendArgumentMessage(sender, pArg, args, 3);
+                    ms.sendArgumentMessage(sender, pArg, args, 3);
                     return;
                 }
                 break;
@@ -76,19 +74,19 @@ public class CheckSubcommand implements Subcommand {
                     try {
                         range = IntRange.parseString(args[3], null);
                     } catch (NumberFormatException e) {
-                        sendInvalidNumberError(sender);
+                        ms.sendInvalidNumberError(sender);
                         return;
                     }
                 } else if (args.length == 5) {
                     try {
                         range = IntRange.parseString(args[3], args[4]);
                     } catch (NumberFormatException e) {
-                        sendInvalidNumberError(sender);
+                        ms.sendInvalidNumberError(sender);
                         return;
                     }
 
                 } else {
-                    MessageSender.sendArgumentMessage(sender, pArg, args, 4,5);
+                    ms.sendArgumentMessage(sender, pArg, args, 4,5);
                     return;
                 }
 

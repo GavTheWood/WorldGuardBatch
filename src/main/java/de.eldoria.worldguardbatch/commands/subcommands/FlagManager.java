@@ -11,20 +11,16 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownFlagError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendWrongFlagValueError;
-
 public class FlagManager implements Subcommand {
     private RegionLoader regionLoader;
     private FlagRegistry flagRegistry;
+    private MessageSender ms;
 
     /**
      * Creates new Flag Manager instance.
@@ -32,6 +28,7 @@ public class FlagManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public FlagManager(@NonNull RegionLoader regionLoader) {
+        this.ms = MessageSender.getInstance();
         this.regionLoader = regionLoader;
         flagRegistry = WorldGuard.getInstance().getFlagRegistry();
     }
@@ -39,14 +36,14 @@ public class FlagManager implements Subcommand {
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 4) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
         var flag = Flags.fuzzyMatchFlag(flagRegistry, args[3]);
 
         if (flag == null) {
-            sendUnkownFlagError(sender);
+            ms.sendUnkownFlagError(sender);
             return;
         }
 
@@ -72,13 +69,13 @@ public class FlagManager implements Subcommand {
         regions.forEach(region -> {
             try {
                 setFlag(region, flag, actor, inputValue);
-                sendModifiedMessage(sender, region.getId());
+                ms.sendModifiedMessage(sender, region.getId());
             } catch (InvalidFlagFormat e) {
-                sendWrongFlagValueError(sender);
+                ms.sendWrongFlagValueError(sender);
             }
         });
 
-        sendTotalModifiedMessage(sender, regions.size());
+        ms.sendTotalModifiedMessage(sender, regions.size());
     }
 
     private static <V> void setFlag(ProtectedRegion region, Flag<V> flag, Actor sender, String value)

@@ -14,31 +14,24 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendInvalidNumberError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendModifiedMessage;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTooFewArgumentError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendTotalModifiedMessage;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownPlayerError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnknownRegionQueryError;
-import static de.eldoria.worldguardbatch.messages.MessageSender.sendUnkownMembershipScopeError;
-
 public class MembershipManager implements Subcommand {
     private RegionLoader regionLoader;
+    private MessageSender ms;
 
     /**
      * Creates a new Membership Manager instance.
      *
      * @param regionLoader RegionLoader object.
      */
-
     public MembershipManager(@NonNull RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
+        this.ms = MessageSender.getInstance();
     }
 
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 3) {
-            sendTooFewArgumentError(sender, pArg);
+            ms.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
@@ -47,7 +40,7 @@ public class MembershipManager implements Subcommand {
         var scope = MembershipScopeArgument.getScope(args[1]);
 
         if (scope == MembershipScopeArgument.NONE) {
-            sendUnkownMembershipScopeError(sender, pArg);
+            ms.sendUnkownMembershipScopeError(sender, pArg);
             return;
         }
 
@@ -57,7 +50,7 @@ public class MembershipManager implements Subcommand {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[3]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE) {
-                sendUnknownRegionQueryError(sender, pArg);
+                ms.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -71,7 +64,7 @@ public class MembershipManager implements Subcommand {
                     if (args.length == 5) {
                         removePlayerByRegex(sender, args, scope);
                     } else {
-                        MessageSender.sendArgumentMessage(sender, pArg, args, 5);
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
                         return;
                     }
                     break;
@@ -79,7 +72,7 @@ public class MembershipManager implements Subcommand {
                     if (args.length == 6 || args.length == 7) {
                         removePlayerByName(sender, args, scope);
                     } else {
-                        MessageSender.sendArgumentMessage(sender, pArg, args, 6, 7);
+                        ms.sendArgumentMessage(sender, pArg, args, 6, 7);
                         return;
                     }
                     break;
@@ -87,7 +80,7 @@ public class MembershipManager implements Subcommand {
                     if (args.length == 5) {
                         removePlayerByOwner(sender, args, scope);
                     } else {
-                        MessageSender.sendArgumentMessage(sender, pArg, args, 5);
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
                         return;
                     }
                     break;
@@ -100,7 +93,7 @@ public class MembershipManager implements Subcommand {
                     if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                         addPlayer(sender, args, scope);
                     } else {
-                        sendUnkownMembershipScopeError(sender, pArg);
+                        ms.sendUnkownMembershipScopeError(sender, pArg);
                         return;
                     }
                     break;
@@ -109,11 +102,11 @@ public class MembershipManager implements Subcommand {
                         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                             addPlayerByRegex(sender, args, scope);
                         } else {
-                            sendUnkownMembershipScopeError(sender, pArg);
+                            ms.sendUnkownMembershipScopeError(sender, pArg);
                             return;
                         }
                     } else {
-                        MessageSender.sendArgumentMessage(sender, pArg, args, 5);
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
                         return;
                     }
                     break;
@@ -122,11 +115,11 @@ public class MembershipManager implements Subcommand {
                         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                             addPlayerByName(sender, args, scope);
                         } else {
-                            sendUnkownMembershipScopeError(sender, pArg);
+                            ms.sendUnkownMembershipScopeError(sender, pArg);
                             return;
                         }
                     } else {
-                        MessageSender.sendArgumentMessage(sender, pArg, args, 6, 7);
+                        ms.sendArgumentMessage(sender, pArg, args, 6, 7);
                         return;
                     }
                     break;
@@ -135,11 +128,11 @@ public class MembershipManager implements Subcommand {
                         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                             addPlayerByOwner(sender, args, scope);
                         } else {
-                            sendUnkownMembershipScopeError(sender, pArg);
+                            ms.sendUnkownMembershipScopeError(sender, pArg);
                             return;
                         }
                     } else {
-                        MessageSender.sendArgumentMessage(sender, pArg, args, 5);
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
                         return;
                     }
                     break;
@@ -158,7 +151,7 @@ public class MembershipManager implements Subcommand {
         var newPlayer = RegionLoader.getLocalPlayerFromName(args[3]);
 
         if (oldPlayer == null || newPlayer == null) {
-            sendUnknownPlayerError(sender);
+            ms.sendUnknownPlayerError(sender);
             return;
         }
 
@@ -206,7 +199,7 @@ public class MembershipManager implements Subcommand {
         var regions = getRegionByCountUp(sender, args);
 
         if (regions == null) {
-            sendInvalidNumberError(sender);
+            ms.sendInvalidNumberError(sender);
             return;
         }
 
@@ -237,7 +230,7 @@ public class MembershipManager implements Subcommand {
         var regions = getRegionByCountUp(sender, args);
 
         if (regions == null) {
-            sendInvalidNumberError(sender);
+            ms.sendInvalidNumberError(sender);
             return;
         }
 
@@ -294,7 +287,7 @@ public class MembershipManager implements Subcommand {
         var localPlayer = RegionLoader.getLocalPlayerFromName(playerName);
 
         if (localPlayer == null) {
-            sendUnknownPlayerError(sender);
+            ms.sendUnknownPlayerError(sender);
             return;
         }
 
@@ -321,9 +314,9 @@ public class MembershipManager implements Subcommand {
                 default:
                     throw new IllegalStateException("Unexpected value: " + scope);
             }
-            sendModifiedMessage(p, region.getId());
+            ms.sendModifiedMessage(p, region.getId());
         }
-        sendTotalModifiedMessage(p, regions.size());
+        ms.sendTotalModifiedMessage(p, regions.size());
     }
 
     private void addByScope(Player sender, MembershipScopeArgument scope,
@@ -331,7 +324,7 @@ public class MembershipManager implements Subcommand {
         var localPlayer = RegionLoader.getLocalPlayerFromName(playerName);
 
         if (localPlayer == null) {
-            sendUnknownPlayerError(sender);
+            ms.sendUnknownPlayerError(sender);
             return;
         }
 
@@ -353,9 +346,9 @@ public class MembershipManager implements Subcommand {
                     throw new IllegalStateException("Unexpected value: " + scope);
             }
 
-            sendModifiedMessage(p, region.getId());
+            ms.sendModifiedMessage(p, region.getId());
         }
-        sendTotalModifiedMessage(p, regions.size());
+        ms.sendTotalModifiedMessage(p, regions.size());
     }
 
     private List<ProtectedRegion> getRegionByCountUp(Player sender, String[] args) {
@@ -366,7 +359,7 @@ public class MembershipManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[5], null);
             } catch (NumberFormatException e) {
-                sendInvalidNumberError(sender);
+                ms.sendInvalidNumberError(sender);
                 return Collections.emptyList();
             }
             return regionLoader.getRegionsWithNameCountUp(sender, name, range);
@@ -374,7 +367,7 @@ public class MembershipManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[5], args[6]);
             } catch (NumberFormatException e) {
-                sendInvalidNumberError(sender);
+                ms.sendInvalidNumberError(sender);
                 return Collections.emptyList();
             }
 
