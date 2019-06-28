@@ -25,9 +25,12 @@ public class WorldGuardBatch extends JavaPlugin {
 
 
         this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
+
+        Bukkit.getLogger().info("World Guard Batch started");
     }
 
     @Override
     public void onDisable() {
+        Bukkit.getLogger().info("World Guard Batch stopped");
     }
 }
