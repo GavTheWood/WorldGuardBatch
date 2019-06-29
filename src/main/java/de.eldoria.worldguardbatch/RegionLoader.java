@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 
@@ -58,11 +59,11 @@ public final class RegionLoader {
             var oPlayer = Bukkit.getOfflinePlayers();
             for (OfflinePlayer p : oPlayer) {
                 if (p.getName().equalsIgnoreCase(name)) {
-                    player = p.getPlayer();
+                    return WorldGuardPlugin.inst().wrapOfflinePlayer(p);
+
                 }
             }
         }
-
         return WorldGuardPlugin.inst().wrapPlayer(player);
     }
 
@@ -139,7 +140,15 @@ public final class RegionLoader {
 
         List<ProtectedRegion> result = new ArrayList<>();
 
-        var pattern = Pattern.compile(regex);
+        Pattern pattern;
+
+        try {
+
+            pattern = Pattern.compile(regex);
+        }catch (PatternSyntaxException e){
+
+            return Collections.emptyList();
+        }
 
         for (ProtectedRegion region : regions.values()) {
             if (pattern.matcher(region.getId()).matches()) {
