@@ -43,7 +43,7 @@ public final class MessagesLib {
     /**
      * Regex expression syntax error.
      */
-    static final String REGEX_SYNTAX_ERROR = "An error occurred while compiling regex expression. Please check regex syntax."
+    static final String REGEX_SYNTAX_ERROR = "An error occurred while compiling regex expression. Please check regex syntax.";
 
     private static final String ARGUMENTS = "\nQueries:";
     private static final String REGEX_LOOKUP_SYNTAX = "\nRegex Lookup: regex [regex pattern]";

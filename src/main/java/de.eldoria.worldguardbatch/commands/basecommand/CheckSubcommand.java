@@ -62,7 +62,7 @@ class CheckSubcommand implements Subcommand {
                 break;
             case REGEX:
                 if (args.length == 3) {
-                    regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
+                    regions = regionLoader.getRegionsWithNameRegex(sender, args[2]);
                 } else {
                     ms.sendArgumentMessage(sender, pArg, args, 3);
                     return;

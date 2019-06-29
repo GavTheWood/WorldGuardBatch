@@ -208,7 +208,7 @@ class MembershipManager implements Subcommand {
     }
 
     private void removePlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
-        var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[4]);
+        var regions = regionLoader.getRegionsWithNameRegex(sender, args[4]);
 
         removeByScope(sender, scope, regions, args[2]);
     }
@@ -238,7 +238,7 @@ class MembershipManager implements Subcommand {
     }
 
     private void addPlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
-        var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[4]);
+        var regions = regionLoader.getRegionsWithNameRegex(sender, args[4]);
 
         addByScope(sender, scope, regions, args[2]);
     }

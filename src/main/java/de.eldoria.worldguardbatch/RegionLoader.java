@@ -131,12 +131,12 @@ public final class RegionLoader {
     /**
      * Find the regions, where the names match with a regex pattern.
      *
-     * @param world World in which the regions should be found
+     * @param sender sender of the command
      * @param regex Regex pattern which should match.
      * @return Returns list with regions with matching name pattern.
      */
-    public List<ProtectedRegion> getRegionsWithNameRegex(org.bukkit.World world, String regex) {
-        var regions = getRegionsFromWorld(BukkitAdapter.adapt(world));
+    public List<ProtectedRegion> getRegionsWithNameRegex(Player sender, String regex) {
+        var regions = getRegionsFromWorld(BukkitAdapter.adapt(sender.getWorld()));
 
         List<ProtectedRegion> result = new ArrayList<>();
 
@@ -146,7 +146,7 @@ public final class RegionLoader {
 
             pattern = Pattern.compile(regex);
         }catch (PatternSyntaxException e){
-
+            ms.sendRegexSyntaxError(sender);
             return Collections.emptyList();
         }
 

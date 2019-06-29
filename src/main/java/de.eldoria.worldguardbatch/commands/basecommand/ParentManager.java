@@ -98,7 +98,7 @@ class ParentManager implements Subcommand {
             }
         } else if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
             if (args.length == 3) {
-                regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
+                regions = regionLoader.getRegionsWithNameRegex(sender, args[2]);
 
 
             } else {
@@ -123,7 +123,7 @@ class ParentManager implements Subcommand {
                     RegionIdentificationArgument.getIdentification(args[2]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
-                regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
+                regions = regionLoader.getRegionsWithNameRegex(sender, args[2]);
 
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
                 regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
@@ -173,7 +173,7 @@ class ParentManager implements Subcommand {
                     RegionIdentificationArgument.getIdentification(args[2]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
-                regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[2]);
+                regions = regionLoader.getRegionsWithNameRegex(sender, args[2]);
                 if (regions.isEmpty()) {
                     ms.sendNoRegionsFoundError(sender);
                 }
