@@ -1,8 +1,10 @@
-package de.eldoria.worldguardbatch.commands.subcommands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
+import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
@@ -10,8 +12,9 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-public class PriorityManager implements Subcommand {
+class PriorityManager implements Subcommand {
     private RegionLoader regionLoader;
+    private MessageSender ms;
 
     /**
      * Creates a ne Priority Manager instance.
@@ -19,13 +22,15 @@ public class PriorityManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public PriorityManager(@NonNull RegionLoader regionLoader) {
+        this.ms = MessageSender.getInstance();
         this.regionLoader = regionLoader;
     }
 
     @Override
-    public boolean directCommand(Player sender, String[] args) {
+    public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 2) {
-            return false;
+            ms.sendTooFewArgumentsError(sender, pArg);
+            return;
         }
 
         RegionIdentificationArgument regionIdentificationArgument = RegionIdentificationArgument.NONE;
@@ -35,8 +40,8 @@ public class PriorityManager implements Subcommand {
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE
                     || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
-                //TODO: Invalid identification arg.
-                return false;
+                ms.sendUnknownRegionQueryError(sender, pArg);
+                return;
             }
         }
 
@@ -45,8 +50,8 @@ public class PriorityManager implements Subcommand {
         try {
             prio = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            //TODO: Not a number.
-            return true;
+            ms.sendInvalidNumberError(sender);
+            return;
         }
 
         switch (regionIdentificationArgument) {
@@ -57,8 +62,8 @@ public class PriorityManager implements Subcommand {
                 if (args.length == 4) {
                     changePriorityByRegex(sender, args, prio);
                 } else {
-                    //TODO: Wrong arguments.
-                    return true;
+                    ms.sendArgumentMessage(sender, pArg, args, 4);
+                    return;
                 }
                 break;
             case COUNT:
@@ -74,37 +79,69 @@ public class PriorityManager implements Subcommand {
             default:
                 throw new IllegalStateException("Unexpected value: " + regionIdentificationArgument);
         }
-        return true;
     }
 
     private void changePriorityByParent(Player sender, String[] args, int prio) {
-        var regions = regionLoader.getAllChildsOfRegionInWorld(sender.getWorld(), args[3]);
+        var regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[3]);
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            ms.sendModifiedMessage(sender, region.getId());
+        });
+        ms.sendTotalModifiedMessage(sender, regions.size());
+
     }
 
     private void changePriorityByCount(Player sender, String[] args, int prio) {
         List<ProtectedRegion> regions = Collections.emptyList();
+        IntRange range;
         if (args.length == 5) {
-            var range = IntRange.parseString(args[4], null);
-            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], range);
+            try {
+                range = IntRange.parseString(args[4], null);
+            } catch (NumberFormatException e) {
+                ms.sendInvalidNumberError(sender);
+                return;
+            }
+
+            regions = regionLoader.getRegionsWithNameCountUp(sender, args[3], range);
         } else if (args.length == 6) {
-            var range = IntRange.parseString(args[4], args[5]);
-            regions = regionLoader.getRegionsWithNameCountUp(sender.getWorld(), args[3], range);
+            try {
+                range = IntRange.parseString(args[4], args[5]);
+            } catch (NumberFormatException e) {
+                ms.sendInvalidNumberError(sender);
+                return;
+            }
+
+            regions = regionLoader.getRegionsWithNameCountUp(sender, args[3], range);
         }
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            ms.sendModifiedMessage(sender, region.getId());
+        });
+        ms.sendTotalModifiedMessage(sender, regions.size());
+
     }
 
     private void changePriority(Player sender, int prio) {
-        var regions = regionLoader.getRegionsInWorld(sender.getWorld());
+        var regions = regionLoader.getRegionsInWorld(sender);
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            ms.sendModifiedMessage(sender, region.getId());
+        });
+        ms.sendTotalModifiedMessage(sender, regions.size());
+
     }
 
     private void changePriorityByRegex(Player sender, String[] args, int prio) {
         var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[3]);
 
-        regions.forEach(region -> region.setPriority(prio));
+        regions.forEach(region -> {
+            region.setPriority(prio);
+            ms.sendModifiedMessage(sender, region.getId());
+        });
+        ms.sendTotalModifiedMessage(sender, regions.size());
+
     }
 }

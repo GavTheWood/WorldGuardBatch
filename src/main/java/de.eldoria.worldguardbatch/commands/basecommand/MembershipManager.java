@@ -1,4 +1,4 @@
-package de.eldoria.worldguardbatch.commands.subcommands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -6,36 +6,43 @@ import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.RegionIdentificationArgument;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.commands.MembershipScopeArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import de.eldoria.worldguardbatch.util.IntRange;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MembershipManager implements Subcommand {
+class MembershipManager implements Subcommand {
     private RegionLoader regionLoader;
+    private MessageSender ms;
 
     /**
      * Creates a new Membership Manager instance.
      *
      * @param regionLoader RegionLoader object.
      */
-
     public MembershipManager(@NonNull RegionLoader regionLoader) {
         this.regionLoader = regionLoader;
+        this.ms = MessageSender.getInstance();
     }
 
     @Override
-    public boolean directCommand(Player sender, String[] args) {
-        if (args.length < 3) return false;
+    public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
+        if (args.length < 3) {
+            ms.sendTooFewArgumentsError(sender, pArg);
+            return;
+        }
 
         var primary = PrimaryActionArgument.getPrimary(args[0]);
 
         var scope = MembershipScopeArgument.getScope(args[1]);
 
-        if (scope == MembershipScopeArgument.NONE) return false;
+        if (scope == MembershipScopeArgument.NONE) {
+            ms.sendUnkownMembershipScopeError(sender, pArg);
+            return;
+        }
 
         RegionIdentificationArgument regionIdentificationArgument = RegionIdentificationArgument.NONE;
 
@@ -43,8 +50,8 @@ public class MembershipManager implements Subcommand {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[3]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE) {
-                //TODO: Invalid identification arg.
-                return false;
+                ms.sendUnknownRegionQueryError(sender, pArg);
+                return;
             }
         }
 
@@ -57,24 +64,24 @@ public class MembershipManager implements Subcommand {
                     if (args.length == 5) {
                         removePlayerByRegex(sender, args, scope);
                     } else {
-                        //TODO: Wrong arguments
-                        return false;
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
+                        return;
                     }
                     break;
                 case COUNT:
                     if (args.length == 6 || args.length == 7) {
                         removePlayerByName(sender, args, scope);
                     } else {
-                        //TODO: Wrong arguments
-                        return false;
+                        ms.sendArgumentMessage(sender, pArg, args, 6, 7);
+                        return;
                     }
                     break;
                 case OWNER:
                     if (args.length == 5) {
                         removePlayerByOwner(sender, args, scope);
                     } else {
-                        //TODO: Wrong arguments
-                        return false;
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
+                        return;
                     }
                     break;
                 default:
@@ -86,8 +93,8 @@ public class MembershipManager implements Subcommand {
                     if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                         addPlayer(sender, args, scope);
                     } else {
-                        //TODO: Wrong Scope
-                        return false;
+                        ms.sendUnkownMembershipScopeError(sender, pArg);
+                        return;
                     }
                     break;
                 case REGEX:
@@ -95,12 +102,12 @@ public class MembershipManager implements Subcommand {
                         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                             addPlayerByRegex(sender, args, scope);
                         } else {
-                            //TODO: Wrong Scope
-                            return false;
+                            ms.sendUnkownMembershipScopeError(sender, pArg);
+                            return;
                         }
                     } else {
-                        //TODO: Wrong arguments
-                        return false;
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
+                        return;
                     }
                     break;
                 case COUNT:
@@ -108,12 +115,12 @@ public class MembershipManager implements Subcommand {
                         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                             addPlayerByName(sender, args, scope);
                         } else {
-                            //TODO: Wrong Scope
-                            return false;
+                            ms.sendUnkownMembershipScopeError(sender, pArg);
+                            return;
                         }
                     } else {
-                        //TODO: Wrong arguments
-                        return false;
+                        ms.sendArgumentMessage(sender, pArg, args, 6, 7);
+                        return;
                     }
                     break;
                 case OWNER:
@@ -121,12 +128,12 @@ public class MembershipManager implements Subcommand {
                         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.OWNER) {
                             addPlayerByOwner(sender, args, scope);
                         } else {
-                            //TODO: Wrong Scope
-                            return false;
+                            ms.sendUnkownMembershipScopeError(sender, pArg);
+                            return;
                         }
                     } else {
-                        //TODO: Wrong arguments
-                        return false;
+                        ms.sendArgumentMessage(sender, pArg, args, 5);
+                        return;
                     }
                     break;
                 default:
@@ -137,25 +144,29 @@ public class MembershipManager implements Subcommand {
                 transferMembership(sender, args, scope);
             }
         }
-        return true;
     }
 
     private void transferMembership(Player sender, String[] args, MembershipScopeArgument scope) {
         var oldPlayer = RegionLoader.getLocalPlayerFromName(args[2]);
         var newPlayer = RegionLoader.getLocalPlayerFromName(args[3]);
 
-        if (scope == MembershipScopeArgument.OWNER || scope == MembershipScopeArgument.ALL) {
-            var ownerRegions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[2]);
+        if (oldPlayer == null || newPlayer == null) {
+            ms.sendUnknownPlayerError(sender);
+            return;
+        }
 
-            removeByScope(MembershipScopeArgument.OWNER, ownerRegions, oldPlayer);
-            addByScope(MembershipScopeArgument.OWNER, ownerRegions, newPlayer);
+        if (scope == MembershipScopeArgument.OWNER || scope == MembershipScopeArgument.ALL) {
+            var ownerRegions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender, args[2]);
+
+            removeByScope(sender, MembershipScopeArgument.OWNER, ownerRegions, oldPlayer);
+            addByScope(sender, MembershipScopeArgument.OWNER, ownerRegions, newPlayer);
         }
 
         if (scope == MembershipScopeArgument.MEMBER || scope == MembershipScopeArgument.ALL) {
-            var memberRegions = regionLoader.getMemberRegionsFromPlayerInWorld(sender.getWorld(), args[2]);
+            var memberRegions = regionLoader.getMemberRegionsFromPlayerInWorld(sender, args[2]);
 
-            addByScope(MembershipScopeArgument.MEMBER, memberRegions, newPlayer);
-            removeByScope(MembershipScopeArgument.MEMBER, memberRegions, oldPlayer);
+            addByScope(sender, MembershipScopeArgument.MEMBER, memberRegions, newPlayer);
+            removeByScope(sender, MembershipScopeArgument.MEMBER, memberRegions, oldPlayer);
         }
     }
 
@@ -168,74 +179,74 @@ public class MembershipManager implements Subcommand {
         //noinspection Duplicates
         switch (scope) {
             case ALL:
-                regions = regionLoader.getRegionsFromPlayerInWorld(sender.getWorld(), playerName);
+                regions = regionLoader.getRegionsFromPlayerInWorld(sender, playerName);
                 break;
             case OWNER:
-                regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), playerName);
+                regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender, playerName);
                 break;
             case MEMBER:
-                regions = regionLoader.getMemberRegionsFromPlayerInWorld(sender.getWorld(), playerName);
+                regions = regionLoader.getMemberRegionsFromPlayerInWorld(sender, playerName);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + scope);
         }
 
 
-        removeByScope(scope, regions, playerName);
+        removeByScope(sender, scope, regions, playerName);
     }
 
     private void removePlayerByName(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = getRegionByCountUp(sender, args);
 
         if (regions == null) {
-            //TODO: No valid number.
+            ms.sendInvalidNumberError(sender);
             return;
         }
 
-        removeByScope(scope, regions, args[2]);
+        removeByScope(sender, scope, regions, args[2]);
 
     }
 
     private void removePlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[4]);
 
-        removeByScope(scope, regions, args[2]);
+        removeByScope(sender, scope, regions, args[2]);
     }
 
     private void removePlayerByOwner(Player sender, String[] args, MembershipScopeArgument scope) {
-        var regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[4]);
+        var regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender, args[4]);
 
-        removeByScope(scope, regions, args[2]);
+        removeByScope(sender, scope, regions, args[2]);
     }
 
 
     private void addPlayer(Player sender, String[] args, MembershipScopeArgument scope) {
-        var regions = regionLoader.getRegionsInWorld(sender.getWorld());
+        var regions = regionLoader.getRegionsInWorld(sender);
 
-        addByScope(scope, regions, args[2]);
+        addByScope(sender, scope, regions, args[2]);
     }
 
     private void addPlayerByName(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = getRegionByCountUp(sender, args);
 
         if (regions == null) {
-            //TODO: No valid number.
+            ms.sendInvalidNumberError(sender);
             return;
         }
 
-        addByScope(scope, regions, args[2]);
+        addByScope(sender, scope, regions, args[2]);
     }
 
     private void addPlayerByRegex(Player sender, String[] args, MembershipScopeArgument scope) {
         var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[4]);
 
-        addByScope(scope, regions, args[2]);
+        addByScope(sender, scope, regions, args[2]);
     }
 
     private void addPlayerByOwner(Player sender, String[] args, MembershipScopeArgument scope) {
-        var regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender.getWorld(), args[4]);
+        var regions = regionLoader.getOwnerRegionsFromPlayerInWorld(sender, args[4]);
 
-        addByScope(scope, regions, args[2]);
+        addByScope(sender, scope, regions, args[2]);
     }
 
     private void removePlayerFromRegion(LocalPlayer player, ProtectedRegion region) {
@@ -271,14 +282,22 @@ public class MembershipManager implements Subcommand {
         region.setMembers(members);
     }
 
-    private void removeByScope(MembershipScopeArgument scope, List<ProtectedRegion> regions, String playerName) {
+    private void removeByScope(Player sender, MembershipScopeArgument scope,
+                               List<ProtectedRegion> regions, String playerName) {
         var localPlayer = RegionLoader.getLocalPlayerFromName(playerName);
 
-        removeByScope(scope, regions, localPlayer);
+        if (localPlayer == null) {
+            ms.sendUnknownPlayerError(sender);
+            return;
+        }
+
+
+        removeByScope(sender, scope, regions, localPlayer);
 
     }
 
-    private void removeByScope(MembershipScopeArgument scope, List<ProtectedRegion> regions, LocalPlayer player) {
+    private void removeByScope(Player p, MembershipScopeArgument scope,
+                               List<ProtectedRegion> regions, LocalPlayer player) {
 
         for (var region : regions) {
 
@@ -295,17 +314,25 @@ public class MembershipManager implements Subcommand {
                 default:
                     throw new IllegalStateException("Unexpected value: " + scope);
             }
-
+            ms.sendModifiedMessage(p, region.getId());
         }
+        ms.sendTotalModifiedMessage(p, regions.size());
     }
 
-    private void addByScope(MembershipScopeArgument scope, List<ProtectedRegion> regions, String playerName) {
+    private void addByScope(Player sender, MembershipScopeArgument scope,
+                            List<ProtectedRegion> regions, String playerName) {
         var localPlayer = RegionLoader.getLocalPlayerFromName(playerName);
 
-        addByScope(scope, regions, localPlayer);
+        if (localPlayer == null) {
+            ms.sendUnknownPlayerError(sender);
+            return;
+        }
+
+        addByScope(sender, scope, regions, localPlayer);
     }
 
-    private void addByScope(MembershipScopeArgument scope, List<ProtectedRegion> regions, LocalPlayer player) {
+    private void addByScope(Player p, MembershipScopeArgument scope,
+                            List<ProtectedRegion> regions, LocalPlayer player) {
 
         for (var region : regions) {
             switch (scope) {
@@ -318,18 +345,33 @@ public class MembershipManager implements Subcommand {
                 default:
                     throw new IllegalStateException("Unexpected value: " + scope);
             }
+
+            ms.sendModifiedMessage(p, region.getId());
         }
+        ms.sendTotalModifiedMessage(p, regions.size());
     }
 
     private List<ProtectedRegion> getRegionByCountUp(Player sender, String[] args) {
         var name = args[4];
 
+        IntRange range;
         if (args.length == 6) {
-            var range = IntRange.parseString(args[5], null);
-            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, range);
+            try {
+                range = IntRange.parseString(args[5], null);
+            } catch (NumberFormatException e) {
+                ms.sendInvalidNumberError(sender);
+                return Collections.emptyList();
+            }
+            return regionLoader.getRegionsWithNameCountUp(sender, name, range);
         } else if (args.length == 7) {
-            var range = IntRange.parseString(args[5], args[6]);
-            return regionLoader.getRegionsWithNameCountUp(sender.getWorld(), name, range);
+            try {
+                range = IntRange.parseString(args[5], args[6]);
+            } catch (NumberFormatException e) {
+                ms.sendInvalidNumberError(sender);
+                return Collections.emptyList();
+            }
+
+            return regionLoader.getRegionsWithNameCountUp(sender, name, range);
         }
         return Collections.emptyList();
     }

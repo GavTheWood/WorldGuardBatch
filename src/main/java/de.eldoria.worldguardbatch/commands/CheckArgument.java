@@ -14,7 +14,7 @@ public enum CheckArgument {
     /**
      * Argument for child regions check.
      */
-    CHILDS,
+    CHILDREN,
 
     /**
      * Argument for regex check.

@@ -1,4 +1,4 @@
-package de.eldoria.worldguardbatch.commands.subcommands;
+package de.eldoria.worldguardbatch.commands.basecommand;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extension.platform.Actor;
@@ -11,15 +11,16 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-import java.util.Optional;
 import java.util.StringJoiner;
 
-public class FlagManager implements Subcommand {
+class FlagManager implements Subcommand {
     private RegionLoader regionLoader;
     private FlagRegistry flagRegistry;
+    private MessageSender ms;
 
     /**
      * Creates new Flag Manager instance.
@@ -27,21 +28,23 @@ public class FlagManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public FlagManager(@NonNull RegionLoader regionLoader) {
+        this.ms = MessageSender.getInstance();
         this.regionLoader = regionLoader;
         flagRegistry = WorldGuard.getInstance().getFlagRegistry();
     }
 
     @Override
-    public boolean directCommand(Player sender, String[] args) {
+    public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 4) {
-            //TODO: Too few arguments.
-            return true;
+            ms.sendTooFewArgumentsError(sender, pArg);
+            return;
         }
 
         var flag = Flags.fuzzyMatchFlag(flagRegistry, args[3]);
 
         if (flag == null) {
-            //TODO: flag not found.
+            ms.sendUnkownFlagError(sender);
+            return;
         }
 
         PrimaryActionArgument paa = PrimaryActionArgument.getPrimary(args[0]);
@@ -66,17 +69,13 @@ public class FlagManager implements Subcommand {
         regions.forEach(region -> {
             try {
                 setFlag(region, flag, actor, inputValue);
+                ms.sendModifiedMessage(sender, region.getId());
             } catch (InvalidFlagFormat e) {
-                //TODO: Invalid value.
+                ms.sendWrongFlagValueError(sender);
             }
         });
 
-        return false;
-    }
-
-    private Optional<Flag<?>> getFlag(String flagName) {
-        return flagRegistry.getAll().stream().filter(flag ->
-                flag.getName().equalsIgnoreCase(flagName)).findFirst();
+        ms.sendTotalModifiedMessage(sender, regions.size());
     }
 
     private static <V> void setFlag(ProtectedRegion region, Flag<V> flag, Actor sender, String value)

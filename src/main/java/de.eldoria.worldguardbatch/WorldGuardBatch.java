@@ -1,37 +1,58 @@
 package de.eldoria.worldguardbatch;
 
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import de.eldoria.worldguardbatch.commands.BaseCommand;
+import de.eldoria.worldguardbatch.commands.basecommand.BaseCommand;
+import de.eldoria.worldguardbatch.messages.MessageSender;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldGuardBatch extends JavaPlugin {
 
-    private RegionContainer wg;
+    /**
+     * File Config.
+     */
+    public static FileConfiguration config;
 
-    private RegionLoader regionLoader;
+    private static WorldGuardBatch instance;
 
-    private PluginManager pm;
+    private boolean loaded;
+
+    /**
+     * Get the Plugin instance.
+     *
+     * @return Plugin instance
+     */
+    public static WorldGuardBatch getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
-        pm = Bukkit.getPluginManager();
+        if (loaded) {
+            reload();
+        }
 
-        wg = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        if (!loaded) {
+            instance = this;
+            saveDefaultConfig();
+            RegionLoader regionLoader = new RegionLoader();
+            this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
+            Bukkit.getLogger().info("World Guard Batch started");
+            loaded = true;
+        }
+    }
 
-        regionLoader = new RegionLoader();
-
-
-        this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
+    /**
+     * Reloads the plugin.
+     */
+    public void reload() {
+        config = getConfig();
+        MessageSender.getInstance().reload();
+        Bukkit.getLogger().info("World Guard Batch reloaded");
     }
 
     @Override
     public void onDisable() {
-
-
+        Bukkit.getLogger().info("World Guard Batch stopped");
     }
-
-
 }

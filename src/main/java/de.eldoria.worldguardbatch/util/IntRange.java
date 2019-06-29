@@ -1,5 +1,6 @@
 package de.eldoria.worldguardbatch.util;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 public class IntRange implements Iterable<Integer> {
@@ -17,10 +18,20 @@ public class IntRange implements Iterable<Integer> {
         this.max = max;
     }
 
+    /**
+     * Get the min value.
+     *
+     * @return integer
+     */
     public int getMin() {
         return min;
     }
 
+    /**
+     * Get the max value.
+     *
+     * @return integer
+     */
     public int getMax() {
         return max;
     }
@@ -31,30 +42,27 @@ public class IntRange implements Iterable<Integer> {
      * @param boundMin lower bound
      * @param boundMax upper bound
      * @return new IntRange instance.
+     * @throws NumberFormatException when input is not a int.
      */
-    public static IntRange parseString(String boundMin, String boundMax) {
+    public static IntRange parseString(String boundMin, String boundMax) throws NumberFormatException {
         int max;
         int min = 0;
 
-        try {
-            max = Integer.parseInt(boundMin);
+        max = Integer.parseInt(boundMin);
 
-        } catch (NumberFormatException e) {
-            max = 0;
-        }
         if (boundMax != null) {
             min = max;
-            try {
-                max = Integer.parseInt(boundMax);
-
-            } catch (NumberFormatException e) {
-                max = 0;
-            }
+            max = Integer.parseInt(boundMax);
         }
         return new IntRange(min, max);
     }
 
-    @Override
+    /**
+     * Iterator to iterate over range.
+     *
+     * @return iterator
+     */
+    @Nonnull
     public Iterator<Integer> iterator() {
 
         return new IntIterator(min, max);
@@ -65,7 +73,7 @@ public class IntRange implements Iterable<Integer> {
         private int min;
         private int max;
 
-        public IntIterator(int min, int max) {
+        IntIterator(int min, int max) {
             this.min = min;
             this.max = max;
         }
