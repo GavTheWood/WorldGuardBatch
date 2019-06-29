@@ -11,6 +11,7 @@ import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_UNKNOWN_FLAG
 import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_UNKNOWN_PLAYER;
 import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_WORLD_NOT_FOUND;
 import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_WRONG_FLAG_VALUE;
+import static de.eldoria.worldguardbatch.messages.MessagesLib.REGEX_SYNTAX_ERROR;
 import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorTooFewArguments;
 import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorTooManyArguments;
 import static de.eldoria.worldguardbatch.messages.MessagesLib.getErrorUnknownCheckArgument;
