@@ -205,6 +205,10 @@ public final class MessageSender {
         sendError(p, getErrorUnknownCheckArgument(pArg));
     }
 
+    public void sendRegexSyntaxError(Player p){
+        sendError(p, REGEX_SYNTAX_ERROR);
+    }
+
     private void sendError(Player p, String message) {
         p.sendMessage(errorColor + message);
     }
@@ -229,7 +233,7 @@ public final class MessageSender {
         sendNotify(p, "Modified " + count + " regions!");
     }
 
-    private void sendNotify(Player p, String message) {
+    public void sendNotify(Player p, String message) {
         p.sendMessage(notifyColor + message);
     }
 }

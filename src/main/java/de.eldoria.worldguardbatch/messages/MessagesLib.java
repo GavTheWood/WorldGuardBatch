@@ -40,6 +40,11 @@ public final class MessagesLib {
      */
     static final String ERROR_UNKNOWN_COMMAND = "Unknown Command. Please use /wgb help for a list of commands.";
 
+    /**
+     * Regex expression syntax error.
+     */
+    static final String REGEX_SYNTAX_ERROR = "An error occurred while compiling regex expression. Please check regex syntax."
+
     private static final String ARGUMENTS = "\nQueries:";
     private static final String REGEX_LOOKUP_SYNTAX = "\nRegex Lookup: regex [regex pattern]";
     private static final String COUNT_LOOKUP_SYNTAX = "\nCount Lookup: count [count 1] <count 2>";
