@@ -33,6 +33,7 @@ public class WorldGuardBatch extends JavaPlugin {
         }
 
         if (!loaded) {
+            config = getConfig();
             instance = this;
             saveDefaultConfig();
             RegionLoader regionLoader = new RegionLoader();
