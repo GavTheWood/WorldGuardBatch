@@ -15,7 +15,7 @@ import java.util.StringJoiner;
 class CheckSubcommand implements Subcommand {
 
     private RegionLoader regionLoader;
-    private MessageSender ms;
+    private MessageSender messageSender;
 
     /**
      * Creates a new Check Subcommand instance.
@@ -23,7 +23,7 @@ class CheckSubcommand implements Subcommand {
      * @param regionLoader region loader instance
      */
     public CheckSubcommand(RegionLoader regionLoader) {
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
 
         this.regionLoader = regionLoader;
     }
@@ -32,20 +32,20 @@ class CheckSubcommand implements Subcommand {
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
 
         if (args.length < 2) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
         CheckArgument checkArg = CheckArgument.getCheckScope(args[1]);
 
         if (checkArg == CheckArgument.NONE) {
-            ms.sendUnkownCheckArgumentError(sender, pArg);
+            messageSender.sendUnkownCheckArgumentError(sender, pArg);
             return;
         }
 
         List<ProtectedRegion> regions = Collections.emptyList();
         if (checkArg != CheckArgument.ALL && args.length < 3) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
         switch (checkArg) {
@@ -57,14 +57,14 @@ class CheckSubcommand implements Subcommand {
                 if (args.length == 3) {
                     regions = regionLoader.getAllChildsOfRegionInWorld(sender, args[2]);
                 } else {
-                    ms.sendArgumentMessage(sender, pArg, args, 3);
+                    messageSender.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             case REGEX:
                 if (args.length == 3) {
                     regions = regionLoader.getRegionsWithNameRegex(sender, args[2]);
                 } else {
-                    ms.sendArgumentMessage(sender, pArg, args, 3);
+                    messageSender.sendArgumentMessage(sender, pArg, args, 3);
                     return;
                 }
                 break;
@@ -74,19 +74,19 @@ class CheckSubcommand implements Subcommand {
                     try {
                         range = IntRange.parseString(args[3], null);
                     } catch (NumberFormatException e) {
-                        ms.sendInvalidNumberError(sender);
+                        messageSender.sendInvalidNumberError(sender);
                         return;
                     }
                 } else if (args.length == 5) {
                     try {
                         range = IntRange.parseString(args[3], args[4]);
                     } catch (NumberFormatException e) {
-                        ms.sendInvalidNumberError(sender);
+                        messageSender.sendInvalidNumberError(sender);
                         return;
                     }
 
                 } else {
-                    ms.sendArgumentMessage(sender, pArg, args, 4,5);
+                    messageSender.sendArgumentMessage(sender, pArg, args, 4,5);
                     return;
                 }
 

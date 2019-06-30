@@ -14,7 +14,7 @@ import java.util.List;
 
 class PriorityManager implements Subcommand {
     private RegionLoader regionLoader;
-    private MessageSender ms;
+    private MessageSender messageSender;
 
     /**
      * Creates a ne Priority Manager instance.
@@ -22,14 +22,14 @@ class PriorityManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public PriorityManager(@NonNull RegionLoader regionLoader) {
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
         this.regionLoader = regionLoader;
     }
 
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 2) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
@@ -40,7 +40,7 @@ class PriorityManager implements Subcommand {
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE
                     || regionIdentificationArgument == RegionIdentificationArgument.OWNER) {
-                ms.sendUnknownRegionQueryError(sender, pArg);
+                messageSender.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -50,7 +50,7 @@ class PriorityManager implements Subcommand {
         try {
             prio = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            ms.sendInvalidNumberError(sender);
+            messageSender.sendInvalidNumberError(sender);
             return;
         }
 
@@ -62,7 +62,7 @@ class PriorityManager implements Subcommand {
                 if (args.length == 4) {
                     changePriorityByRegex(sender, args, prio);
                 } else {
-                    ms.sendArgumentMessage(sender, pArg, args, 4);
+                    messageSender.sendArgumentMessage(sender, pArg, args, 4);
                     return;
                 }
                 break;
@@ -86,9 +86,9 @@ class PriorityManager implements Subcommand {
 
         regions.forEach(region -> {
             region.setPriority(prio);
-            ms.sendModifiedMessage(sender, region.getId());
+            messageSender.sendModifiedMessage(sender, region.getId());
         });
-        ms.sendTotalModifiedMessage(sender, regions.size());
+        messageSender.sendTotalModifiedMessage(sender, regions.size());
 
     }
 
@@ -99,7 +99,7 @@ class PriorityManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[4], null);
             } catch (NumberFormatException e) {
-                ms.sendInvalidNumberError(sender);
+                messageSender.sendInvalidNumberError(sender);
                 return;
             }
 
@@ -108,7 +108,7 @@ class PriorityManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[4], args[5]);
             } catch (NumberFormatException e) {
-                ms.sendInvalidNumberError(sender);
+                messageSender.sendInvalidNumberError(sender);
                 return;
             }
 
@@ -117,9 +117,9 @@ class PriorityManager implements Subcommand {
 
         regions.forEach(region -> {
             region.setPriority(prio);
-            ms.sendModifiedMessage(sender, region.getId());
+            messageSender.sendModifiedMessage(sender, region.getId());
         });
-        ms.sendTotalModifiedMessage(sender, regions.size());
+        messageSender.sendTotalModifiedMessage(sender, regions.size());
 
     }
 
@@ -128,9 +128,9 @@ class PriorityManager implements Subcommand {
 
         regions.forEach(region -> {
             region.setPriority(prio);
-            ms.sendModifiedMessage(sender, region.getId());
+            messageSender.sendModifiedMessage(sender, region.getId());
         });
-        ms.sendTotalModifiedMessage(sender, regions.size());
+        messageSender.sendTotalModifiedMessage(sender, regions.size());
 
     }
 
@@ -139,9 +139,9 @@ class PriorityManager implements Subcommand {
 
         regions.forEach(region -> {
             region.setPriority(prio);
-            ms.sendModifiedMessage(sender, region.getId());
+            messageSender.sendModifiedMessage(sender, region.getId());
         });
-        ms.sendTotalModifiedMessage(sender, regions.size());
+        messageSender.sendTotalModifiedMessage(sender, regions.size());
 
     }
 }

@@ -29,13 +29,13 @@ public final class RegionLoader {
 
     private WorldGuard worldGuard;
     private RegionContainer regionContainer;
-    private MessageSender ms;
+    private MessageSender messageSender;
 
     /**
      * Creates a new Region Loader object.
      */
     RegionLoader() {
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
         this.worldGuard = WorldGuard.getInstance();
         this.regionContainer = worldGuard.getPlatform().getRegionContainer();
     }
@@ -81,7 +81,6 @@ public final class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            ms.sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -101,7 +100,7 @@ public final class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            ms.sendUnknownPlayerError(sender);
+            messageSender.sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -121,7 +120,7 @@ public final class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            ms.sendUnknownPlayerError(sender);
+            messageSender.sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -132,7 +131,7 @@ public final class RegionLoader {
      * Find the regions, where the names match with a regex pattern.
      *
      * @param sender sender of the command
-     * @param regex Regex pattern which should match.
+     * @param regex  Regex pattern which should match.
      * @return Returns list with regions with matching name pattern.
      */
     public List<ProtectedRegion> getRegionsWithNameRegex(Player sender, String regex) {
@@ -145,8 +144,8 @@ public final class RegionLoader {
         try {
 
             pattern = Pattern.compile(regex);
-        }catch (PatternSyntaxException e){
-            ms.sendRegexSyntaxError(sender);
+        } catch (PatternSyntaxException e) {
+            messageSender.sendRegexSyntaxError(sender);
             return Collections.emptyList();
         }
 
@@ -177,7 +176,7 @@ public final class RegionLoader {
 
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
         if (worldContainer == null) {
-            ms.sendWorldNotFoundError(sender);
+            messageSender.sendWorldNotFoundError(sender);
             return Collections.emptyList();
         }
 
@@ -206,7 +205,7 @@ public final class RegionLoader {
     public List<ProtectedRegion> getAllChildsOfRegionInWorld(Player sender, String name) {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
         if (worldContainer == null) {
-            ms.sendWorldNotFoundError(sender);
+            messageSender.sendWorldNotFoundError(sender);
             return Collections.emptyList();
         }
 
@@ -227,7 +226,7 @@ public final class RegionLoader {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
 
         if (worldContainer == null) {
-            ms.sendWorldNotFoundError(sender);
+            messageSender.sendWorldNotFoundError(sender);
             return result;
         }
 
@@ -249,7 +248,7 @@ public final class RegionLoader {
         var worldContainer = regionContainer.get(BukkitAdapter.adapt(sender.getWorld()));
 
         if (worldContainer == null) {
-            ms.sendWorldNotFoundError(sender);
+            messageSender.sendWorldNotFoundError(sender);
             return null;
         }
 

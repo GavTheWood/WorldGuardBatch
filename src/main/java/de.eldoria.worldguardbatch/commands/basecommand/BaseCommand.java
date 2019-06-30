@@ -4,13 +4,10 @@ import de.eldoria.worldguardbatch.RegionLoader;
 import de.eldoria.worldguardbatch.WorldGuardBatch;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
 import de.eldoria.worldguardbatch.messages.MessageSender;
-import de.eldoria.worldguardbatch.messages.MessagesLib;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.StringJoiner;
 
 public class BaseCommand implements CommandExecutor {
 
@@ -19,7 +16,8 @@ public class BaseCommand implements CommandExecutor {
     private ParentManager parentManager;
     private FlagManager flagManager;
     private CheckSubcommand checkSubCommand;
-    private MessageSender ms;
+    private HelpCommand helpCommand;
+    private MessageSender messageSender;
 
     /**
      * Creates a new Base Command Object.
@@ -32,7 +30,8 @@ public class BaseCommand implements CommandExecutor {
         this.parentManager = new ParentManager(regionLoader);
         this.flagManager = new FlagManager(regionLoader);
         this.checkSubCommand = new CheckSubcommand(regionLoader);
-        this.ms = MessageSender.getInstance();
+        this.helpCommand = new HelpCommand();
+        this.messageSender = MessageSender.getInstance();
     }
 
     @Override
@@ -54,7 +53,7 @@ public class BaseCommand implements CommandExecutor {
 
         switch (primaryArg) {
             case NONE:
-                ms.sendUnkownCommandError(p);
+                messageSender.sendUnkownCommandError(p);
                 break;
             case MADD:
             case MTRANS:
@@ -79,7 +78,7 @@ public class BaseCommand implements CommandExecutor {
                 checkSubCommand.directCommand(p, primaryArg, args);
                 break;
             case HELP:
-                executeHelpCommand(p);
+                helpCommand.directCommand(p,primaryArg, args);
                 break;
             case RELOAD:
                 WorldGuardBatch.getInstance().reload();
@@ -91,16 +90,4 @@ public class BaseCommand implements CommandExecutor {
         return true;
     }
 
-    private void executeHelpCommand(Player p) {
-        StringJoiner stringJoiner = new StringJoiner("\n");
-
-        for (PrimaryActionArgument arg : PrimaryActionArgument.values()) {
-            MessagesLib.CommandText cmdText = MessagesLib.getCommandText(arg);
-            if (cmdText != null) {
-                stringJoiner.add(cmdText.getDescription()).add(cmdText.getPattern());
-            }
-        }
-
-        p.sendMessage(stringJoiner.toString());
-    }
 }

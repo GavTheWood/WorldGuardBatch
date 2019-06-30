@@ -8,10 +8,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldGuardBatch extends JavaPlugin {
 
+    private static WorldGuardBatch instance;
 
     private ConfigLoader config;
 
-    private static WorldGuardBatch instance;
 
     private boolean loaded;
 
@@ -32,8 +32,8 @@ public class WorldGuardBatch extends JavaPlugin {
 
         if (!loaded) {
             saveDefaultConfig();
-            config = new ConfigLoader();
             instance = this;
+            config = new ConfigLoader();
             RegionLoader regionLoader = new RegionLoader();
             this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
             Bukkit.getLogger().info("World Guard Batch started");
@@ -55,6 +55,10 @@ public class WorldGuardBatch extends JavaPlugin {
         Bukkit.getLogger().info("World Guard Batch stopped");
     }
 
+    /**
+     * Get the configLoader instance.
+     * @return Config loader instance.
+     */
     public ConfigLoader getConfigData() {
         return config;
     }

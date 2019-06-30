@@ -20,7 +20,7 @@ import java.util.StringJoiner;
 class FlagManager implements Subcommand {
     private RegionLoader regionLoader;
     private FlagRegistry flagRegistry;
-    private MessageSender ms;
+    private MessageSender messageSender;
 
     /**
      * Creates new Flag Manager instance.
@@ -28,7 +28,7 @@ class FlagManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public FlagManager(@NonNull RegionLoader regionLoader) {
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
         this.regionLoader = regionLoader;
         flagRegistry = WorldGuard.getInstance().getFlagRegistry();
     }
@@ -36,14 +36,14 @@ class FlagManager implements Subcommand {
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length < 4) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
         var flag = Flags.fuzzyMatchFlag(flagRegistry, args[3]);
 
         if (flag == null) {
-            ms.sendUnkownFlagError(sender);
+            messageSender.sendUnkownFlagError(sender);
             return;
         }
 
@@ -69,13 +69,13 @@ class FlagManager implements Subcommand {
         regions.forEach(region -> {
             try {
                 setFlag(region, flag, actor, inputValue);
-                ms.sendModifiedMessage(sender, region.getId());
+                messageSender.sendModifiedMessage(sender, region.getId());
             } catch (InvalidFlagFormat e) {
-                ms.sendWrongFlagValueError(sender);
+                messageSender.sendWrongFlagValueError(sender);
             }
         });
 
-        ms.sendTotalModifiedMessage(sender, regions.size());
+        messageSender.sendTotalModifiedMessage(sender, regions.size());
     }
 
     private static <V> void setFlag(ProtectedRegion region, Flag<V> flag, Actor sender, String value)

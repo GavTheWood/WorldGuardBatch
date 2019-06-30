@@ -23,16 +23,17 @@ import static de.eldoria.worldguardbatch.messages.MessagesLib.getRegionNotFound;
 public final class MessageSender {
 
     private static MessageSender instance;
-    private ConfigLoader configLoader;
+    private static final String NEW_LINE = "\n";
 
+    private ConfigLoader configLoader;
 
     private String notifyColor = "§d";
     private String errorColor = "§c";
 
 
     private MessageSender() {
-        reload();
         configLoader = WorldGuardBatch.getInstance().getConfigData();
+        reload();
     }
 
     /**
@@ -210,7 +211,12 @@ public final class MessageSender {
         sendError(p, getErrorUnknownCheckArgument(pArg));
     }
 
-    public void sendRegexSyntaxError(Player p){
+    /**
+     * Sends a Regex Syntax error.
+     *
+     * @param p target of the message
+     */
+    public void sendRegexSyntaxError(Player p) {
         sendError(p, REGEX_SYNTAX_ERROR);
     }
 
@@ -238,7 +244,22 @@ public final class MessageSender {
         sendNotify(p, "Modified " + count + " regions!");
     }
 
+    /**
+     * Sends a notify to the player.
+     *
+     * @param p       target of the message
+     * @param message message for the player
+     */
     public void sendNotify(Player p, String message) {
         p.sendMessage(notifyColor + message);
     }
+
+    /**
+     * Line separator.
+     * @return String not null
+     */
+    public String getNewLine() {
+        return NEW_LINE;
+    }
+
 }
