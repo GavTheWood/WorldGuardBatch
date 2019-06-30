@@ -3,8 +3,6 @@ package de.eldoria.worldguardbatch.messages;
 import de.eldoria.worldguardbatch.commands.QueryType;
 import lombok.NonNull;
 
-import javax.annotation.Nullable;
-
 public class CommandText {
     private String description;
     private String command;
@@ -12,29 +10,33 @@ public class CommandText {
     private boolean queryRequired;
     private QueryType[] queryTypes;
 
-    private final String ARGUMENTS = "§eQueries:";
-    private final String REGEX_LOOKUP_SYNTAX = "§7    Regex Lookup: §eregex §c[regex pattern]";
-    private final String COUNT_LOOKUP_SYNTAX = "§7    Count Lookup: §ecount §c[count 1] §9<count 2>";
-    private final String OWNER_LOOKUP_SYNTAX = "§7    Owner Lookup: §eowner §c[region owner name]";
-    private final String WORLD_LOOKUP_SYNTAX = "§7    World Lookup: §eall";
-    private final String CHILD_LOOKUP_SYNTAX = "§7    Child Lookup: §echildren §c[regionId]";
-    private final String PARENT_LOOKUP_SYNTAX = "§7    Parent Lookup: §eparent §c[regionId]";
+    private final String arguments = "§eQueries:";
+    private final String regexLookupSyntax = "§7    Regex Lookup: §eregex §c[regex pattern]";
+    private final String countLookupSyntax = "§7    Count Lookup: §ecount §c[count 1] §9<count 2>";
+    private final String ownerLookupSyntax = "§7    Owner Lookup: §eowner §c[region owner name]";
+    private final String worldLookupSyntax = "§7    World Lookup: §eall";
+    private final String childLookupSyntax = "§7    Child Lookup: §echildren §c[regionId]";
+    private final String parentLookupSyntax = "§7    Parent Lookup: §eparent §c[regionId]";
 
-    private final String COMMAND = "§7  /wgb §e";
-    private final String PATTERN_COLOR = "§9";
-    private final String QUERY_REQUIRED = "§c[query]";
-    private final String QUERY_OPTIONAL = "§a<query>";
+    private final String patternPrefix = "§7  /wgb §e";
+    private final String patternColor = "§9";
+    private final String queryRequiredText = "§c[query]";
+    private final String queryOptionalText = "§a<query>";
 
-    private final String DESCRIPTION_COLOR = "§6";
+    private final String descriptionColor = "§6";
 
 
     /**
      * Creates new command text object.
      *
-     * @param description description of the command
-     * @param pattern     pattern of the command
+     * @param description   description of the command
+     * @param pattern       pattern of the command
+     * @param command       command name
+     * @param queryRequired true if a query is required
+     * @param queryTypes    all allowed query types
      */
-    CommandText(@NonNull String description, @NonNull String command, @NonNull String pattern, boolean queryRequired, QueryType... queryTypes) {
+    CommandText(@NonNull String description, @NonNull String command,
+                @NonNull String pattern, boolean queryRequired, QueryType... queryTypes) {
         this.queryRequired = queryRequired;
         this.queryTypes = queryTypes;
         this.description = description;
@@ -49,7 +51,7 @@ public class CommandText {
      */
     @NonNull
     public String getDescription() {
-        return DESCRIPTION_COLOR + description;
+        return descriptionColor + description;
     }
 
     /**
@@ -60,21 +62,25 @@ public class CommandText {
     @NonNull
     public String getPattern() {
         StringBuilder builder = new StringBuilder();
-        builder.append(COMMAND).append(command).append(" ").append(PATTERN_COLOR).append(pattern).append(" ");
+        builder.append(patternPrefix).append(command).append(" ").append(patternColor).append(pattern).append(" ");
         if (queryRequired) {
-            builder.append(QUERY_REQUIRED);
+            builder.append(queryRequiredText);
         } else if (queryTypes.length != 0) {
-            builder.append(QUERY_OPTIONAL);
+            builder.append(queryOptionalText);
         }
         return builder.toString();
     }
 
+    /**
+     * Returns the queries as text block.
+     * @return Queries or empty string
+     */
     public String getQueries() {
         if (queryTypes.length == 0) {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(ARGUMENTS);
+        builder.append(arguments);
 
         for (QueryType type : queryTypes) {
             builder.append(System.lineSeparator());
@@ -82,23 +88,25 @@ public class CommandText {
             switch (type) {
 
                 case ALL:
-                    builder.append(WORLD_LOOKUP_SYNTAX);
+                    builder.append(worldLookupSyntax);
                     break;
                 case CHILDREN:
-                    builder.append(CHILD_LOOKUP_SYNTAX);
+                    builder.append(childLookupSyntax);
                     break;
                 case PARENT:
-                    builder.append(PARENT_LOOKUP_SYNTAX);
+                    builder.append(parentLookupSyntax);
                     break;
                 case REGEX:
-                    builder.append(REGEX_LOOKUP_SYNTAX);
+                    builder.append(regexLookupSyntax);
                     break;
                 case COUNT:
-                    builder.append(COUNT_LOOKUP_SYNTAX);
+                    builder.append(countLookupSyntax);
                     break;
                 case OWNER:
-                    builder.append(OWNER_LOOKUP_SYNTAX);
+                    builder.append(ownerLookupSyntax);
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + type);
             }
             builder.append("§r");
         }

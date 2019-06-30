@@ -8,12 +8,15 @@ public class ConfigLoader {
 
     private FileConfiguration config;
 
+    /**
+     * Creates new ConfigLoader object.
+     */
     public ConfigLoader() {
         reload();
     }
 
     /**
-     * reloads the loaded config
+     * Reloads the loaded config.
      */
     public void reload() {
         config = WorldGuardBatch.getInstance().getConfig();

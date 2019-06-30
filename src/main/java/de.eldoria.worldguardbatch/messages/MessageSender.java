@@ -25,7 +25,7 @@ public final class MessageSender {
     private static MessageSender instance;
     private ConfigLoader configLoader;
 
-    private final String NEW_LINE = "\n";
+    private final String newLine = "\n";
 
     private String notifyColor = "§d";
     private String errorColor = "§c";
@@ -211,6 +211,11 @@ public final class MessageSender {
         sendError(p, getErrorUnknownCheckArgument(pArg));
     }
 
+    /**
+     * Sends a Regex Syntax error.
+     *
+     * @param p target of the message
+     */
     public void sendRegexSyntaxError(Player p) {
         sendError(p, REGEX_SYNTAX_ERROR);
     }
@@ -239,12 +244,22 @@ public final class MessageSender {
         sendNotify(p, "Modified " + count + " regions!");
     }
 
+    /**
+     * Sends a notify to the player.
+     *
+     * @param p       target of the message
+     * @param message message for the player
+     */
     public void sendNotify(Player p, String message) {
         p.sendMessage(notifyColor + message);
     }
 
+    /**
+     * Line separator.
+     * @return String not null
+     */
     public String getNewLine() {
-        return NEW_LINE;
+        return newLine;
     }
 
 }

@@ -81,7 +81,6 @@ public final class RegionLoader {
         var p = getLocalPlayerFromName(playerName);
 
         if (p == null) {
-            ms.sendUnknownPlayerError(sender);
             return Collections.emptyList();
         }
 
@@ -132,7 +131,7 @@ public final class RegionLoader {
      * Find the regions, where the names match with a regex pattern.
      *
      * @param sender sender of the command
-     * @param regex Regex pattern which should match.
+     * @param regex  Regex pattern which should match.
      * @return Returns list with regions with matching name pattern.
      */
     public List<ProtectedRegion> getRegionsWithNameRegex(Player sender, String regex) {
@@ -145,7 +144,7 @@ public final class RegionLoader {
         try {
 
             pattern = Pattern.compile(regex);
-        }catch (PatternSyntaxException e){
+        } catch (PatternSyntaxException e) {
             ms.sendRegexSyntaxError(sender);
             return Collections.emptyList();
         }

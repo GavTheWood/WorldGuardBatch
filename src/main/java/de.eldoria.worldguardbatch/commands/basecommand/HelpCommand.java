@@ -9,9 +9,12 @@ import org.bukkit.entity.Player;
 import java.util.StringJoiner;
 
 public class HelpCommand implements Subcommand {
-    MessageSender ms;
+    private MessageSender ms;
 
 
+    /**
+     * Creates new HelpCommand instance.
+     */
     public HelpCommand() {
         this.ms = MessageSender.getInstance();
     }
@@ -24,7 +27,7 @@ public class HelpCommand implements Subcommand {
             var command = PrimaryActionArgument.getPrimary(args[1]);
             if (command == PrimaryActionArgument.NONE) {
                 ms.sendUnkownCommandError(sender);
-            }else{
+            } else {
                 sendCommandHelp(sender, command);
             }
         }
@@ -37,8 +40,8 @@ public class HelpCommand implements Subcommand {
         for (PrimaryActionArgument arg : PrimaryActionArgument.values()) {
             CommandText command = MessagesLib.getCommandText(arg);
             if (command != null) {
-                String cmd = command.getDescription() + ms.getNewLine() +
-                        command.getPattern();
+                String cmd = command.getDescription() + ms.getNewLine()
+                        + command.getPattern();
                 stringJoiner.add(cmd);
             }
         }

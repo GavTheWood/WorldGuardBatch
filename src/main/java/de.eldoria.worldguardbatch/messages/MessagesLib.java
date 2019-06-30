@@ -42,7 +42,8 @@ public final class MessagesLib {
     /**
      * Regex expression syntax error.
      */
-    static final String REGEX_SYNTAX_ERROR = "An error occurred while compiling regex expression. Please check regex syntax.";
+    static final String REGEX_SYNTAX_ERROR = "An error occurred while compiling regex expression. "
+            + "Please check regex syntax.";
 
 
     private static final String ERROR_TOO_FEW_ARGUMENTS = "Too few arguments. Please check pattern:\n";
@@ -103,7 +104,7 @@ public final class MessagesLib {
     private static CommandText getCommandTextSave(PrimaryActionArgument arg) {
         var com = getCommandText(arg);
         return com == null ? new CommandText("Command not defined.Please report this error.",
-                "","",false) : com;
+                "", "", false) : com;
     }
 
     /**

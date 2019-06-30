@@ -12,7 +12,7 @@ public enum QueryType {
     CHILDREN,
 
     /**
-     * Argument for parent query
+     * Argument for parent query.
      */
     PARENT,
 
