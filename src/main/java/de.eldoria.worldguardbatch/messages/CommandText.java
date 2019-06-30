@@ -9,21 +9,22 @@ public class CommandText {
     private String pattern;
     private boolean queryRequired;
     private QueryType[] queryTypes;
+    private MessageSender messageSender;
 
-    private final String arguments = "§eQueries:";
-    private final String regexLookupSyntax = "§7    Regex Lookup: §eregex §c[regex pattern]";
-    private final String countLookupSyntax = "§7    Count Lookup: §ecount §c[count 1] §9<count 2>";
-    private final String ownerLookupSyntax = "§7    Owner Lookup: §eowner §c[region owner name]";
-    private final String worldLookupSyntax = "§7    World Lookup: §eall";
-    private final String childLookupSyntax = "§7    Child Lookup: §echildren §c[regionId]";
-    private final String parentLookupSyntax = "§7    Parent Lookup: §eparent §c[regionId]";
+    private static final String QUERIES = "§eQueries:";
+    private static final String REGEX_LOOKUP_SYNTAX = "§7    Regex Lookup: §eregex §c[regex pattern]";
+    private static final String COUNT_LOOKUP_SYNTAX = "§7    Count Lookup: §ecount §c[count 1] §9<count 2>";
+    private static final String OWNER_LOOKUP_SYNTAX = "§7    Owner Lookup: §eowner §c[region owner name]";
+    private static final String WORLD_LOOKUP_SYNTAX = "§7    World Lookup: §eall";
+    private static final String CHILD_LOOKUP_SYNTAX = "§7    Child Lookup: §echildren §c[regionId]";
+    private static final String PARENT_LOOKUP_SYNTAX = "§7    Parent Lookup: §eparent §c[regionId]";
 
-    private final String patternPrefix = "§7  /wgb §e";
-    private final String patternColor = "§9";
-    private final String queryRequiredText = "§c[query]";
-    private final String queryOptionalText = "§a<query>";
+    private static final String PATTERN_PREFIX = "§7  /wgb §e";
+    private static final String PATTERN_COLOR = "§9";
+    private static final String QUERY_REQUIRED = "§c[query]";
+    private static final String QUERY_OPTIONAL = "§a<query>";
 
-    private final String descriptionColor = "§6";
+    private static final String DESCRIPTION_COLOR = "§6";
 
 
     /**
@@ -42,6 +43,7 @@ public class CommandText {
         this.description = description;
         this.command = command;
         this.pattern = pattern;
+        this.messageSender = MessageSender.getInstance();
     }
 
     /**
@@ -51,7 +53,7 @@ public class CommandText {
      */
     @NonNull
     public String getDescription() {
-        return descriptionColor + description;
+        return DESCRIPTION_COLOR + description;
     }
 
     /**
@@ -62,17 +64,18 @@ public class CommandText {
     @NonNull
     public String getPattern() {
         StringBuilder builder = new StringBuilder();
-        builder.append(patternPrefix).append(command).append(" ").append(patternColor).append(pattern).append(" ");
+        builder.append(PATTERN_PREFIX).append(command).append(" ").append(PATTERN_COLOR).append(pattern).append(" ");
         if (queryRequired) {
-            builder.append(queryRequiredText);
+            builder.append(QUERY_REQUIRED);
         } else if (queryTypes.length != 0) {
-            builder.append(queryOptionalText);
+            builder.append(QUERY_OPTIONAL);
         }
         return builder.toString();
     }
 
     /**
      * Returns the queries as text block.
+     *
      * @return Queries or empty string
      */
     public String getQueries() {
@@ -80,30 +83,30 @@ public class CommandText {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(arguments);
+        builder.append(QUERIES);
 
         for (QueryType type : queryTypes) {
-            builder.append(System.lineSeparator());
+            builder.append(messageSender.getNewLine());
 
             switch (type) {
 
                 case ALL:
-                    builder.append(worldLookupSyntax);
+                    builder.append(WORLD_LOOKUP_SYNTAX);
                     break;
                 case CHILDREN:
-                    builder.append(childLookupSyntax);
+                    builder.append(CHILD_LOOKUP_SYNTAX);
                     break;
                 case PARENT:
-                    builder.append(parentLookupSyntax);
+                    builder.append(PARENT_LOOKUP_SYNTAX);
                     break;
                 case REGEX:
-                    builder.append(regexLookupSyntax);
+                    builder.append(REGEX_LOOKUP_SYNTAX);
                     break;
                 case COUNT:
-                    builder.append(countLookupSyntax);
+                    builder.append(COUNT_LOOKUP_SYNTAX);
                     break;
                 case OWNER:
-                    builder.append(ownerLookupSyntax);
+                    builder.append(OWNER_LOOKUP_SYNTAX);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + type);

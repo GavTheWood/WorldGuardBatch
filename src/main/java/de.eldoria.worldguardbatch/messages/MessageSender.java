@@ -25,7 +25,7 @@ public final class MessageSender {
     private static MessageSender instance;
     private ConfigLoader configLoader;
 
-    private final String newLine = "\n";
+    private static final String NEW_LINE = "\n";
 
     private String notifyColor = "§d";
     private String errorColor = "§c";
@@ -259,7 +259,7 @@ public final class MessageSender {
      * @return String not null
      */
     public String getNewLine() {
-        return newLine;
+        return NEW_LINE;
     }
 
 }
