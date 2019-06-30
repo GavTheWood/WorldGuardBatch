@@ -211,7 +211,7 @@ public final class MessageSender {
         sendError(p, getErrorUnknownCheckArgument(pArg));
     }
 
-    public void sendRegexSyntaxError(Player p){
+    public void sendRegexSyntaxError(Player p) {
         sendError(p, REGEX_SYNTAX_ERROR);
     }
 
@@ -242,4 +242,9 @@ public final class MessageSender {
     public void sendNotify(Player p, String message) {
         p.sendMessage(notifyColor + message);
     }
+
+    public String getNewLine() {
+        return NEW_LINE;
+    }
+
 }
