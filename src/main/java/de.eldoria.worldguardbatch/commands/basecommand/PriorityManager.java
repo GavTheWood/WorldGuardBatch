@@ -135,7 +135,7 @@ class PriorityManager implements Subcommand {
     }
 
     private void changePriorityByRegex(Player sender, String[] args, int prio) {
-        var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), args[3]);
+        var regions = regionLoader.getRegionsWithNameRegex(sender, args[3]);
 
         regions.forEach(region -> {
             region.setPriority(prio);

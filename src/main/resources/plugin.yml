@@ -4,7 +4,7 @@ depend: [WorldGuard, WorldEdit]
 description: Provides batch commands for WorldGuard operations.
 author: Hadde
 website: https://eldoria.de
-main: de.eldoria.WorldGuardBatch
+main: de.eldoria.worldguardbatch.WorldGuardBatch
 api-version: 1.13
 commands:
   wgb:

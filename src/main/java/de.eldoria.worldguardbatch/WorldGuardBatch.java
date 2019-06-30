@@ -1,17 +1,15 @@
 package de.eldoria.worldguardbatch;
 
 import de.eldoria.worldguardbatch.commands.basecommand.BaseCommand;
+import de.eldoria.worldguardbatch.config.ConfigLoader;
 import de.eldoria.worldguardbatch.messages.MessageSender;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldGuardBatch extends JavaPlugin {
 
-    /**
-     * File Config.
-     */
-    public static FileConfiguration config;
+
+    private ConfigLoader config;
 
     private static WorldGuardBatch instance;
 
@@ -33,8 +31,9 @@ public class WorldGuardBatch extends JavaPlugin {
         }
 
         if (!loaded) {
-            instance = this;
             saveDefaultConfig();
+            config = new ConfigLoader();
+            instance = this;
             RegionLoader regionLoader = new RegionLoader();
             this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
             Bukkit.getLogger().info("World Guard Batch started");
@@ -46,7 +45,7 @@ public class WorldGuardBatch extends JavaPlugin {
      * Reloads the plugin.
      */
     public void reload() {
-        config = getConfig();
+        config.reload();
         MessageSender.getInstance().reload();
         Bukkit.getLogger().info("World Guard Batch reloaded");
     }
@@ -54,5 +53,9 @@ public class WorldGuardBatch extends JavaPlugin {
     @Override
     public void onDisable() {
         Bukkit.getLogger().info("World Guard Batch stopped");
+    }
+
+    public ConfigLoader getConfigData() {
+        return config;
     }
 }

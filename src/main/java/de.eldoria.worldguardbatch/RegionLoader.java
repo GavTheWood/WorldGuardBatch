@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 
@@ -58,11 +59,11 @@ public final class RegionLoader {
             var oPlayer = Bukkit.getOfflinePlayers();
             for (OfflinePlayer p : oPlayer) {
                 if (p.getName().equalsIgnoreCase(name)) {
-                    player = p.getPlayer();
+                    return WorldGuardPlugin.inst().wrapOfflinePlayer(p);
+
                 }
             }
         }
-
         return WorldGuardPlugin.inst().wrapPlayer(player);
     }
 
@@ -130,16 +131,24 @@ public final class RegionLoader {
     /**
      * Find the regions, where the names match with a regex pattern.
      *
-     * @param world World in which the regions should be found
+     * @param sender sender of the command
      * @param regex Regex pattern which should match.
      * @return Returns list with regions with matching name pattern.
      */
-    public List<ProtectedRegion> getRegionsWithNameRegex(org.bukkit.World world, String regex) {
-        var regions = getRegionsFromWorld(BukkitAdapter.adapt(world));
+    public List<ProtectedRegion> getRegionsWithNameRegex(Player sender, String regex) {
+        var regions = getRegionsFromWorld(BukkitAdapter.adapt(sender.getWorld()));
 
         List<ProtectedRegion> result = new ArrayList<>();
 
-        var pattern = Pattern.compile(regex);
+        Pattern pattern;
+
+        try {
+
+            pattern = Pattern.compile(regex);
+        }catch (PatternSyntaxException e){
+            ms.sendRegexSyntaxError(sender);
+            return Collections.emptyList();
+        }
 
         for (ProtectedRegion region : regions.values()) {
             if (pattern.matcher(region.getId()).matches()) {

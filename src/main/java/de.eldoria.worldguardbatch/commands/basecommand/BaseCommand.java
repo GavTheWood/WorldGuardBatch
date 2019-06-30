@@ -41,14 +41,15 @@ public class BaseCommand implements CommandExecutor {
         if (commandSender instanceof Player) {
             p = (Player) commandSender;
         } else {
+            commandSender.sendMessage("Only player can user this.");
             return false;
         }
 
         if (args.length == 0) {
-            p.sendMessage("Type '/wgb help' for a list of commands.");
+            MessageSender.getInstance().sendNotify(p, "Type '/wgb help' for a list of commands.");
             return true;
         }
-        
+
         var primaryArg = PrimaryActionArgument.getPrimary(args[0]);
 
         switch (primaryArg) {

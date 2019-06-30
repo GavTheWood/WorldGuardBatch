@@ -52,7 +52,7 @@ class FlagManager implements Subcommand {
         String regexPattern = args[2];
 
 
-        var regions = regionLoader.getRegionsWithNameRegex(sender.getWorld(), regexPattern);
+        var regions = regionLoader.getRegionsWithNameRegex(sender, regexPattern);
         String input = null;
         if (paa == PrimaryActionArgument.FSET) {
             StringJoiner joiner = new StringJoiner(" ");
