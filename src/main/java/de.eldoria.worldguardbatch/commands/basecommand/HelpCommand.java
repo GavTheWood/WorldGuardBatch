@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import java.util.StringJoiner;
 
 public class HelpCommand implements Subcommand {
-    private MessageSender ms;
+    private MessageSender messageSender;
 
 
     /**
      * Creates new HelpCommand instance.
      */
     public HelpCommand() {
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class HelpCommand implements Subcommand {
         } else if (args.length == 2) {
             var command = PrimaryActionArgument.getPrimary(args[1]);
             if (command == PrimaryActionArgument.NONE) {
-                ms.sendUnkownCommandError(sender);
+                messageSender.sendUnkownCommandError(sender);
             } else {
                 sendCommandHelp(sender, command);
             }
@@ -35,12 +35,12 @@ public class HelpCommand implements Subcommand {
     }
 
     private void sendGeneralHelp(Player p) {
-        StringJoiner stringJoiner = new StringJoiner(ms.getNewLine());
+        StringJoiner stringJoiner = new StringJoiner(messageSender.getNewLine());
 
         for (PrimaryActionArgument arg : PrimaryActionArgument.values()) {
             CommandText command = MessagesLib.getCommandText(arg);
             if (command != null) {
-                String cmd = command.getDescription() + ms.getNewLine()
+                String cmd = command.getDescription() + messageSender.getNewLine()
                         + command.getPattern();
                 stringJoiner.add(cmd);
             }
@@ -54,14 +54,14 @@ public class HelpCommand implements Subcommand {
         var command = MessagesLib.getCommandText(pArg);
 
         if (command == null) {
-            ms.sendUnkownCommandError(p);
+            messageSender.sendUnkownCommandError(p);
             return;
         }
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(command.getDescription()).append(ms.getNewLine())
-                .append(command.getPattern()).append(ms.getNewLine()).append(command.getQueries());
+        builder.append(command.getDescription()).append(messageSender.getNewLine())
+                .append(command.getPattern()).append(messageSender.getNewLine()).append(command.getQueries());
 
         p.sendMessage(builder.toString());
     }

@@ -15,7 +15,7 @@ import java.util.List;
 
 class ParentManager implements Subcommand {
     private RegionLoader regionLoader;
-    private MessageSender ms;
+    private MessageSender messageSender;
 
     /**
      * Creates new Parent Manager instance.
@@ -23,14 +23,14 @@ class ParentManager implements Subcommand {
      * @param regionLoader Region Loader instance
      */
     public ParentManager(@NonNull RegionLoader regionLoader) {
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
         this.regionLoader = regionLoader;
     }
 
     @Override
     public void directCommand(Player sender, PrimaryActionArgument pArg, String[] args) {
         if (args.length == 1) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
@@ -42,7 +42,7 @@ class ParentManager implements Subcommand {
             regionIdentificationArgument = RegionIdentificationArgument.getIdentification(args[2]);
 
             if (regionIdentificationArgument == RegionIdentificationArgument.NONE) {
-                ms.sendUnknownRegionQueryError(sender, pArg);
+                messageSender.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -61,7 +61,7 @@ class ParentManager implements Subcommand {
                 if (args.length == 3) {
                     changeParent(sender, args);
                 } else {
-                    ms.sendArgumentMessage(sender, pArg, args, 3);
+                    messageSender.sendArgumentMessage(sender, pArg, args, 3);
                 }
                 break;
             default:
@@ -75,7 +75,7 @@ class ParentManager implements Subcommand {
         var parent = regionLoader.getRegionInWorld(sender, args[1]);
 
         if (parent == null) {
-            ms.sendRegionNotFoundError(sender, args[1]);
+            messageSender.sendRegionNotFoundError(sender, args[1]);
             return;
         }
 
@@ -84,7 +84,7 @@ class ParentManager implements Subcommand {
 
     private void removeParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 3) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
         RegionIdentificationArgument regionIdentificationArgument =
@@ -94,7 +94,7 @@ class ParentManager implements Subcommand {
         if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
             regions = getCountUpRegions(sender, sender.getWorld(), args, 2);
             if (regions.isEmpty()) {
-                ms.sendNoRegionsFoundError(sender);
+                messageSender.sendNoRegionsFoundError(sender);
             }
         } else if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
             if (args.length == 3) {
@@ -102,7 +102,7 @@ class ParentManager implements Subcommand {
 
 
             } else {
-                ms.sendTooManyArgumentsError(sender, pArg);
+                messageSender.sendTooManyArgumentsError(sender, pArg);
                 return;
             }
 
@@ -112,7 +112,7 @@ class ParentManager implements Subcommand {
 
     private void removeChildren(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            ms.sendTooFewArgumentsError(sender, pArg);
+            messageSender.sendTooFewArgumentsError(sender, pArg);
             return;
         }
 
@@ -128,12 +128,12 @@ class ParentManager implements Subcommand {
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
                 regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
                 if (regions.isEmpty()) {
-                    ms.sendNoRegionsFoundError(sender);
+                    messageSender.sendNoRegionsFoundError(sender);
                     return;
                 }
 
             } else {
-                ms.sendUnknownRegionQueryError(sender, pArg);
+                messageSender.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
 
@@ -142,13 +142,13 @@ class ParentManager implements Subcommand {
                 if (parent != null && parent.getId().equalsIgnoreCase(args[1])) {
                     try {
                         region.setParent(null);
-                        ms.sendModifiedMessage(sender, region.getId());
+                        messageSender.sendModifiedMessage(sender, region.getId());
                     } catch (ProtectedRegion.CircularInheritanceException e) {
                         //This will never happen... EVER!
                     }
                 }
             });
-            ms.sendTotalModifiedMessage(sender, regions.size());
+            messageSender.sendTotalModifiedMessage(sender, regions.size());
 
             return;
         }
@@ -159,7 +159,7 @@ class ParentManager implements Subcommand {
 
     private void setParent(Player sender, String[] args, PrimaryActionArgument pArg) {
         if (args.length < 2) {
-            ms.sendArgumentMessage(sender, pArg, args, 2);
+            messageSender.sendArgumentMessage(sender, pArg, args, 2);
             return;
         }
         var parent = regionLoader.getRegionInWorld(sender, args[1]);
@@ -175,12 +175,12 @@ class ParentManager implements Subcommand {
             if (regionIdentificationArgument == RegionIdentificationArgument.REGEX) {
                 regions = regionLoader.getRegionsWithNameRegex(sender, args[2]);
                 if (regions.isEmpty()) {
-                    ms.sendNoRegionsFoundError(sender);
+                    messageSender.sendNoRegionsFoundError(sender);
                 }
             } else if (regionIdentificationArgument == RegionIdentificationArgument.COUNT) {
                 regions = getCountUpRegions(sender, sender.getWorld(), args, 3);
             } else {
-                ms.sendUnknownRegionQueryError(sender, pArg);
+                messageSender.sendUnknownRegionQueryError(sender, pArg);
                 return;
             }
         }
@@ -192,12 +192,12 @@ class ParentManager implements Subcommand {
         regions.forEach(region -> {
             try {
                 region.setParent(parent);
-                ms.sendModifiedMessage(p, region.getId());
+                messageSender.sendModifiedMessage(p, region.getId());
             } catch (ProtectedRegion.CircularInheritanceException e) {
                 //This will never happen... EVER!
             }
         });
-        ms.sendTotalModifiedMessage(p, regions.size());
+        messageSender.sendTotalModifiedMessage(p, regions.size());
 
     }
 
@@ -209,7 +209,7 @@ class ParentManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[nameIndex + 1], null);
             } catch (NumberFormatException e) {
-                ms.sendInvalidNumberError(sender);
+                messageSender.sendInvalidNumberError(sender);
                 return Collections.emptyList();
             }
 
@@ -219,7 +219,7 @@ class ParentManager implements Subcommand {
             try {
                 range = IntRange.parseString(args[nameIndex + 1], args[nameIndex + 2]);
             } catch (NumberFormatException e) {
-                ms.sendInvalidNumberError(sender);
+                messageSender.sendInvalidNumberError(sender);
                 return Collections.emptyList();
             }
 

@@ -17,7 +17,7 @@ public class BaseCommand implements CommandExecutor {
     private FlagManager flagManager;
     private CheckSubcommand checkSubCommand;
     private HelpCommand helpCommand;
-    private MessageSender ms;
+    private MessageSender messageSender;
 
     /**
      * Creates a new Base Command Object.
@@ -31,7 +31,7 @@ public class BaseCommand implements CommandExecutor {
         this.flagManager = new FlagManager(regionLoader);
         this.checkSubCommand = new CheckSubcommand(regionLoader);
         this.helpCommand = new HelpCommand();
-        this.ms = MessageSender.getInstance();
+        this.messageSender = MessageSender.getInstance();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class BaseCommand implements CommandExecutor {
 
         switch (primaryArg) {
             case NONE:
-                ms.sendUnkownCommandError(p);
+                messageSender.sendUnkownCommandError(p);
                 break;
             case MADD:
             case MTRANS:
