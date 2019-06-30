@@ -6,6 +6,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigLoader {
 
+    private FileConfiguration config;
+
     public ConfigLoader() {
         reload();
     }
@@ -14,7 +16,7 @@ public class ConfigLoader {
      * reloads the loaded config
      */
     public void reload() {
-        FileConfiguration config = WorldGuardBatch.getInstance().getConfig();
+        config = WorldGuardBatch.getInstance().getConfig();
     }
 
     /**
@@ -24,7 +26,7 @@ public class ConfigLoader {
      */
     @NonNull
     public String getErrorColor() {
-        return WorldGuardBatch.config.getString(ConfigPath.errorColor, "§c");
+        return config.getString(ConfigPath.errorColor, "§c");
     }
 
     /**
@@ -34,6 +36,6 @@ public class ConfigLoader {
      */
     @NonNull
     public String getNotifyColor() {
-        return WorldGuardBatch.config.getString(ConfigPath.notifyColor, "§d");
+        return config.getString(ConfigPath.notifyColor, "§d");
     }
 }
