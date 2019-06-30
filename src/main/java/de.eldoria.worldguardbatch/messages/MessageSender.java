@@ -23,9 +23,9 @@ import static de.eldoria.worldguardbatch.messages.MessagesLib.getRegionNotFound;
 public final class MessageSender {
 
     private static MessageSender instance;
-    private ConfigLoader configLoader;
-
     private static final String NEW_LINE = "\n";
+
+    private ConfigLoader configLoader;
 
     private String notifyColor = "§d";
     private String errorColor = "§c";

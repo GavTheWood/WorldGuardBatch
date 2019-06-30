@@ -4,13 +4,6 @@ import de.eldoria.worldguardbatch.commands.QueryType;
 import lombok.NonNull;
 
 public class CommandText {
-    private String description;
-    private String command;
-    private String pattern;
-    private boolean queryRequired;
-    private QueryType[] queryTypes;
-    private MessageSender messageSender;
-
     private static final String QUERIES = "§eQueries:";
     private static final String REGEX_LOOKUP_SYNTAX = "§7    Regex Lookup: §eregex §c[regex pattern]";
     private static final String COUNT_LOOKUP_SYNTAX = "§7    Count Lookup: §ecount §c[count 1] §9<count 2>";
@@ -26,6 +19,12 @@ public class CommandText {
 
     private static final String DESCRIPTION_COLOR = "§6";
 
+    private String description;
+    private String command;
+    private String pattern;
+    private boolean queryRequired;
+    private QueryType[] queryTypes;
+    private MessageSender messageSender;
 
     /**
      * Creates new command text object.
