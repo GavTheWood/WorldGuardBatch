@@ -19,6 +19,7 @@ public class BaseCommand implements CommandExecutor {
     private ParentManager parentManager;
     private FlagManager flagManager;
     private CheckSubcommand checkSubCommand;
+    private HelpCommand helpCommand;
     private MessageSender ms;
 
     /**
@@ -32,6 +33,7 @@ public class BaseCommand implements CommandExecutor {
         this.parentManager = new ParentManager(regionLoader);
         this.flagManager = new FlagManager(regionLoader);
         this.checkSubCommand = new CheckSubcommand(regionLoader);
+        this.helpCommand = new HelpCommand();
         this.ms = MessageSender.getInstance();
     }
 
@@ -79,7 +81,7 @@ public class BaseCommand implements CommandExecutor {
                 checkSubCommand.directCommand(p, primaryArg, args);
                 break;
             case HELP:
-                executeHelpCommand(p);
+                helpCommand.directCommand(p,primaryArg, args);
                 break;
             case RELOAD:
                 WorldGuardBatch.getInstance().reload();
@@ -91,16 +93,4 @@ public class BaseCommand implements CommandExecutor {
         return true;
     }
 
-    private void executeHelpCommand(Player p) {
-        StringJoiner stringJoiner = new StringJoiner("\n");
-
-        for (PrimaryActionArgument arg : PrimaryActionArgument.values()) {
-            MessagesLib.CommandText cmdText = MessagesLib.getCommandText(arg);
-            if (cmdText != null) {
-                stringJoiner.add(cmdText.getDescription()).add(cmdText.getPattern());
-            }
-        }
-
-        p.sendMessage(stringJoiner.toString());
-    }
 }
