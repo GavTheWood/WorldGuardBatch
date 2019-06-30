@@ -1,8 +1,7 @@
 package de.eldoria.worldguardbatch.messages;
 
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
-
-import javax.annotation.Nullable;
+import de.eldoria.worldguardbatch.commands.QueryType;
 
 public final class MessagesLib {
     /**
@@ -45,13 +44,6 @@ public final class MessagesLib {
      */
     static final String REGEX_SYNTAX_ERROR = "An error occurred while compiling regex expression. Please check regex syntax.";
 
-    private static final String ARGUMENTS = "\nQueries:";
-    private static final String REGEX_LOOKUP_SYNTAX = "\nRegex Lookup: regex [regex pattern]";
-    private static final String COUNT_LOOKUP_SYNTAX = "\nCount Lookup: count [count 1] <count 2>";
-    private static final String OWNER_LOOKUP_SYNTAX = "\nOwner Lookup: owner [region owner name]";
-    private static final String WORLD_LOOKUP_SYNTAX = "\nWorld Lookup: all";
-    private static final String CHILD_LOOKUP_SYNTAX = "\nChild Lookup: children [regionId]";
-    private static final String PARENT_LOOKUP_SYNTAX = "\nParent Lookup: parent [regionId]";
 
     private static final String ERROR_TOO_FEW_ARGUMENTS = "Too few arguments. Please check pattern:\n";
     private static final String ERROR_TOO_MANY_ARGUMENTS = "Too many arguments. Please check command pattern:\n";
@@ -64,82 +56,55 @@ public final class MessagesLib {
             + "Take a look at the command:\n";
 
     private static CommandText MREM = new CommandText("Remove a member from regions.",
-            "/wgb mrem [all/member/owner] [playerToRemove] <query>\n"
-                    + ARGUMENTS
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX
-                    + OWNER_LOOKUP_SYNTAX);
+            "mrem", "[all/member/owner] [playerToRemove]", false,
+            QueryType.REGEX, QueryType.COUNT, QueryType.OWNER);
 
     private static CommandText MADD = new CommandText("Add a player to a region.",
-            "/wgb madd [member/owner] [playerToAdd] <query>"
-                    + ARGUMENTS
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX
-                    + OWNER_LOOKUP_SYNTAX);
+            "madd", "[member/owner] [playerToAdd]", false,
+            QueryType.REGEX, QueryType.COUNT, QueryType.OWNER);
 
     private static CommandText MTRANS
             = new CommandText("Transfers the membership of a region from a player to another player.",
-            "/wgb mtrans [all/owner/member] [oldPlayer] [newPlayer]");
+            "mtrans", "[all/owner/member] [oldPlayer] [newPlayer]", false);
 
     private static CommandText PRIO = new CommandText("Changes the priority of a region.",
-            "/wgb prio [priority] <query>"
-                    + ARGUMENTS
-                    + PARENT_LOOKUP_SYNTAX
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX);
+            "prio", "[priority]", false,
+            QueryType.REGEX, QueryType.COUNT, QueryType.PARENT);
 
     private static CommandText PSET = new CommandText("Set or override the parent of a region.",
-            "/wgb pset [parent] <query>"
-                    + ARGUMENTS
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX);
+            "pset", "[parent]", false,
+            QueryType.REGEX, QueryType.COUNT);
 
     private static CommandText PCH = new CommandText("Changes the parent of all Children to a new parent.",
-            "/wgb pch [oldParent] [newParent]");
+            "pch", "[oldParent] [newParent]", false);
 
     private static CommandText CREM = new CommandText("Removes parent from region depending on parent region.",
-            "/wgb crem <query>"
-                    + ARGUMENTS
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX);
+            "crem", "", false,
+            QueryType.REGEX, QueryType.COUNT);
 
     private static CommandText PREM = new CommandText("Removes the parent from regions.",
-            "/wgb prem [query]"
-                    + ARGUMENTS
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX);
+            "prem", "", true,
+            QueryType.REGEX, QueryType.COUNT);
 
     private static CommandText FSET = new CommandText("Sets a flag.",
-            "/wgb fet regex [regex pattern] [flagname] [flagvalue]");
+            "fet", "regex [regex pattern] §e[flagname] [flagvalue]", false);
 
     private static CommandText FREM = new CommandText("Removes a flag.",
-            "/wgb frem regex [regex pattern] [flagname]");
+            "frem", "regex [regex pattern] §e[flagname]", false);
 
     private static CommandText CHECK = new CommandText("Counts the regions affected by query",
-            "/wgb check [query]"
-                    + ARGUMENTS
-                    + WORLD_LOOKUP_SYNTAX
-                    + CHILD_LOOKUP_SYNTAX
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX
-                    + OWNER_LOOKUP_SYNTAX);
+            "check", "", true,
+            QueryType.ALL, QueryType.REGEX, QueryType.COUNT, QueryType.CHILDREN, QueryType.OWNER);
 
     private static CommandText LIST = new CommandText("Lists the regions affected by query",
-            "/wgb list [query]"
-                    + ARGUMENTS
-                    + WORLD_LOOKUP_SYNTAX
-                    + CHILD_LOOKUP_SYNTAX
-                    + REGEX_LOOKUP_SYNTAX
-                    + COUNT_LOOKUP_SYNTAX
-                    + OWNER_LOOKUP_SYNTAX);
-
+            "list", "", true,
+            QueryType.ALL, QueryType.REGEX, QueryType.COUNT, QueryType.CHILDREN, QueryType.OWNER);
 
     private static CommandText getCommandTextSave(PrimaryActionArgument arg) {
         var com = getCommandText(arg);
         return com == null ? new CommandText("Command not defined.Please report this error.",
-                "Command not defined.Please report this error.") : com;
+                "","",false) : com;
     }
-
 
     /**
      * Get the error for the command.
@@ -236,43 +201,6 @@ public final class MessagesLib {
             default:
         }
         return null;
-    }
-
-    public static class CommandText {
-        private String description;
-        private String pattern;
-
-        /**
-         * Creates new command text object.
-         *
-         * @param description description of the command
-         * @param pattern     pattern of the command
-         */
-        CommandText(String description, String pattern) {
-
-            this.description = description;
-            this.pattern = pattern;
-        }
-
-        /**
-         * Get the description of the command.
-         *
-         * @return Description string
-         */
-        @Nullable
-        public String getDescription() {
-            return description;
-        }
-
-        /**
-         * Get the pattern of the command.
-         *
-         * @return Pattern string
-         */
-        @Nullable
-        public String getPattern() {
-            return pattern;
-        }
     }
 
 
