@@ -32,8 +32,8 @@ public class WorldGuardBatch extends JavaPlugin {
 
         if (!loaded) {
             saveDefaultConfig();
-            config = new ConfigLoader();
             instance = this;
+            config = new ConfigLoader();
             RegionLoader regionLoader = new RegionLoader();
             this.getCommand("wgb").setExecutor(new BaseCommand(regionLoader));
             Bukkit.getLogger().info("World Guard Batch started");

@@ -25,14 +25,15 @@ public final class MessageSender {
     private static MessageSender instance;
     private ConfigLoader configLoader;
 
+    private final String NEW_LINE = "\n";
 
     private String notifyColor = "§d";
     private String errorColor = "§c";
 
 
     private MessageSender() {
-        reload();
         configLoader = WorldGuardBatch.getInstance().getConfigData();
+        reload();
     }
 
     /**
