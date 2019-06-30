@@ -1,7 +1,8 @@
 package de.eldoria.worldguardbatch.messages;
 
+import de.eldoria.worldguardbatch.WorldGuardBatch;
 import de.eldoria.worldguardbatch.commands.PrimaryActionArgument;
-import de.eldoria.worldguardbatch.config.Loader;
+import de.eldoria.worldguardbatch.config.ConfigLoader;
 import org.bukkit.entity.Player;
 
 import static de.eldoria.worldguardbatch.messages.MessagesLib.ERROR_INVALID_NUMBERS;
@@ -22,6 +23,8 @@ import static de.eldoria.worldguardbatch.messages.MessagesLib.getRegionNotFound;
 public final class MessageSender {
 
     private static MessageSender instance;
+    private ConfigLoader configLoader;
+
 
     private String notifyColor = "§d";
     private String errorColor = "§c";
@@ -29,6 +32,7 @@ public final class MessageSender {
 
     private MessageSender() {
         reload();
+        configLoader = WorldGuardBatch.getInstance().getConfigData();
     }
 
     /**
@@ -47,8 +51,8 @@ public final class MessageSender {
      * Reload module.
      */
     public void reload() {
-        notifyColor = Loader.getNotifyColor();
-        errorColor = Loader.getErrorColor();
+        notifyColor = configLoader.getNotifyColor();
+        errorColor = configLoader.getErrorColor();
     }
 
     /**
